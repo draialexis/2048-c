@@ -5,4 +5,5 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(2048_c
         main.c
-        toolbox.c)
+        toolbox.c
+        game.c)
