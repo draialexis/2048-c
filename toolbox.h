@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include<time.h>
 
 #define DEBUG printf("file %s; line %d\n", __FILE__, __LINE__);
 #define FAIL_OUT DEBUG exit(EXIT_FAILURE);
