@@ -28,7 +28,7 @@ int menu(int **board, int *scorePtr) {
 
 void newGame(int **board, int *scorePtr) {
     *scorePtr = 0;
-//    board = makeBoard();
+    board = MakeBoard();
 
     int spawned = 0;
     while (spawned < 2) {
