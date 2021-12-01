@@ -3,20 +3,24 @@
 
 //function that initiates the 4x4 table.(it has no parameters since the size is already set)
 int **MakeBoard(){
-    int **T= malloc(4*sizeof(int*));
+    int **T = NULL;
+    T =  malloc(4*sizeof(int*));
     if(T==NULL){
         MALLOC_FAIL
     }
     for(int i=0;i<4;i++){
-        T[i]=malloc(4*(sizeof(int)));
+        T[i] = NULL;
+        T[i] = malloc(4*(sizeof(int)));
         if(T[i]==NULL){
             FreeBoard(T);
             MALLOC_FAIL
         }
         for(int j = 0; j < 4; j++) { //initializing all tiles at 0
             T[i][j] = 0;
+            //printf("working: T[i][j] = %d\n",  T[i][j]);
         }
     }
+    ///printf("board == null?: %d\n", T==NULL);
     return T;
 }
 
@@ -31,10 +35,11 @@ void DisplayBoard(int **T){
                 exit(0);
             }
             x = T[i][j];
-            if(x != 0) {printf("%d ", x);} else {printf("X ");}
+            if(x != 0) {printf("%d ", x);} else {printf("/ ");}
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 void FreeBoard(int **board){
@@ -75,7 +80,6 @@ int menu(int **board, int *scorePtr) {
 
 void newGame(int **board, int *scorePtr) {
     *scorePtr = 0;
-    board = MakeBoard();
 
     int spawned = 0;
     while (spawned < 2) {
@@ -84,14 +88,12 @@ void newGame(int **board, int *scorePtr) {
 }
 
 void saveGame() {
-    DEBUG
     printf("saveGame(): to be implemented...\n");
     //TODO implement
     //csv-style file? easy format, 1st value is b[0][0], 2nd is b[0][1]... 16th is b[3][3], 17th (last) is the score
 }
 
 void loadGame() {
-    DEBUG
     printf("loadGame(): to be implemented...\n");
     //TODO implement
     //use the save file to fill the board and the score
@@ -126,13 +128,14 @@ int youWin(int **board, int score) {
 
 int spawnTile(int **board, int val) {
     //TODO ? instead use a list of (x, y) coordinates (updated during play, containing all free tiles)
-    int x = rand() % 4;
-    int y = rand() % 4;
-    if (board[x][y] == 0) {
-        board[x][y] = val;
+    int row = rand() % 4;
+    int col = rand() % 4;
+
+    if (board[row][col] == 0) {
+        board[row][col] = val;
         return 1;
     } else {
-        spawnTile(board, val);
+        return 0;
     }
 }
 

@@ -3,10 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include<time.h>
+#include <time.h>
 
-#define DEBUG printf("file %s; line %d\n", __FILE__, __LINE__);
-#define FAIL_OUT DEBUG exit(EXIT_FAILURE);
+#define DEBUG printf("yikes\n");
+#define FAIL_OUT printf("failing out\n"); exit(EXIT_FAILURE);
 #define MALLOC_FAIL printf("_____ MALLOC FAILED _____\n"); FAIL_OUT
 
 #define N 4

@@ -1,0 +1,2 @@
+language = "c"
+run = "gcc -Wall main.c toolbox.c game.c -o main"

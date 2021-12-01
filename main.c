@@ -4,8 +4,7 @@
 
 int main() {
     srand(time(NULL));
-
-    int **board = NULL;     // the game board
+    int **board = MakeBoard();     // the game board
     int isFull = 0;         // a boolean: is the board full?
     int hasWon = 0;         // a boolean: has the player won?
     int score;              // the current score
@@ -16,14 +15,14 @@ int main() {
     //TODO do the pointer thingy with spawning
 
     int isOn = menu(board, &score);
-
+    
     while (isOn) {
-
+        DisplayBoard(board);
         //the player input
         int input = getc(stdin);
         fflush(stdin);
-        isOn = checkQuit(input);
-        //TODO deal with all other valid inputs
+        isOn = checkQuit(board, &score, input);
+        //TODO deal with all other valid inputs (dgbh)
 
         //board-moving goes here
         // on every merge instance
@@ -36,7 +35,7 @@ int main() {
 
         if (hasWon) {
             hasWon = 0; //we've taken the win into account, we can reinit this to 0 for next game
-            isOn = youWin(score);
+            isOn = youWin(board, score);
         }
 
         if (!isFull) {
