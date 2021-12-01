@@ -53,6 +53,66 @@ void FreeBoard(int **board){
     }
 }
 
+int PromptMove(int *isOn, int **board, int *scorePtr) {
+    printf("make a move\n");
+    int input = getc(stdin);
+    fflush(stdin);
+    *isOn = checkQuit(board, scorePtr, input);
+    //TODO deal with all other valid inputs (dgbh)
+    return SlideBoard(board, scorePtr);
+}
+
+int SlideBoard(int **b, int * score){
+    // slide to the right, we'll use matrix rotation to take care of the other directions
+    int moves = 0;
+    for(int a = 0; a < 3; a++){
+        for(int i = 0; i < 4; i++){
+            for(int j= 2; j > 0; j--){
+                if(b[i][j] != 0 && b[i][j+1] == b[i][j]){
+                    b[i][j] = b[i][j+1];
+                    b[i][j+1] = 0;
+                    //moves++;
+                }
+            }
+        }
+    }
+
+    //fusion goes here
+
+
+    if(moves) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+/*
+int SlideBoard(int **board, int * score){
+    // slide to the right, we'll use matrix rotation to take care of the other directions
+    int hasMoved = 0;
+    for(int a = 0; a < 3; a++){
+        for(int i = 0; i < 4; i++){
+            for(int j= 3; j > 0; j--){
+                if(board[i][j] == 0 && board[i][j-1] != 0){
+                    board[i][j] = board[i][j-1];
+                    board[i][j-1] = 0;
+                    hasMoved++;
+                }
+            }
+        }
+    }
+
+    //fusion goes here
+
+
+    if(hasMoved) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+*/
+
 int menu(int **board, int *scorePtr) {
     printf("=_=_=_=_=_=_=_= 2048 =_=_=_=_=_=_=_=\n"
            "nouvelle partie:. n\n"

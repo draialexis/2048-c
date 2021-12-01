@@ -3,6 +3,10 @@
 
 int **MakeBoard();
 
+int PromptMove(int *isOn, int **board, int *scorePtr);
+
+int SlideBoard(int **board, int * score);
+
 void DisplayBoard(int **T);
 
 void FreeBoard(int **board);

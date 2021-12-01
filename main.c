@@ -12,18 +12,18 @@ int main() {
     int spawned;            // the amount of tile succesfully spawned
     int val;                // the value to record in a tile
     int freeTiles = 16;     // the number of free tiles
+    int moveDone;           // a boolean: does the player need to try another move instead?
     //TODO do the pointer thingy with spawning
 
     int isOn = menu(board, &score);
     
     while (isOn) {
         DisplayBoard(board);
-        //the player input
-        int input = getc(stdin);
-        fflush(stdin);
-        isOn = checkQuit(board, &score, input);
-        //TODO deal with all other valid inputs (dgbh)
-
+        
+        moveDone = PromptMove(&isOn, board, &score);
+        while(!moveDone){
+            moveDone = PromptMove(&isOn, board, &score);
+        }
         //board-moving goes here
         // on every merge instance
         //... counting score...
