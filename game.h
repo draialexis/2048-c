@@ -11,18 +11,24 @@ void DisplayBoard(int **T);
 
 void FreeBoard(int **board);
 
-int menu(int **board, int *scorePtr);
+int Menu(int **board, int *scorePtr);
 
-int checkQuit(int **board, int *scorePtr, int input);
+int CheckStay(int **board, int *scorePtr, int input);
 
-void newGame(int **board, int *scorePtr);
+void NewGame(int **board, int *scorePtr);
 
-void loadGame();
+void LoadGame();
 
-void saveGame();
+void SaveGame();
 
-int youWin(int **board, int score);
+int YouWin(int **board, int score);
 
-int spawnTile(int **board, int val);
+int SpawnTile(int **board, int val);
+
+void CleanCheck();
+
+void Rotate(int **b);
+
+void InitBoard(int **T);
 
 #endif //INC_2048_C_GAME_H

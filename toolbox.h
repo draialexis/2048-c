@@ -5,10 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define DEBUG printf("yikes\n");
-#define FAIL_OUT printf("failing out\n"); exit(EXIT_FAILURE);
-#define MALLOC_FAIL printf("_____ MALLOC FAILED _____\n"); FAIL_OUT
-
-#define N 4
+//don't use DEBUG in replit...
+#define DEBUG printf("file %s; line %d\n", __FILE__, __LINE__);
+#define FAIL_OUT printf("failing out\n");exit(EXIT_FAILURE);
+#define MALLOC_FAIL printf("!_malloc failed_!\n"); FAIL_OUT
 
 #endif //INC_2048_C_TOOLBOX_H

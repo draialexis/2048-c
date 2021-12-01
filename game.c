@@ -15,13 +15,17 @@ int **MakeBoard(){
             FreeBoard(T);
             MALLOC_FAIL
         }
-        for(int j = 0; j < 4; j++) { //initializing all tiles at 0
+    }
+    InitBoard(T);
+    return T;
+}
+
+void InitBoard(int **T){
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
             T[i][j] = 0;
-            //printf("working: T[i][j] = %d\n",  T[i][j]);
         }
     }
-    ///printf("board == null?: %d\n", T==NULL);
-    return T;
 }
 
 //board display
@@ -56,22 +60,80 @@ void FreeBoard(int **board){
 int PromptMove(int *isOn, int **board, int *scorePtr) {
     printf("make a move\n");
     int input = getc(stdin);
-    fflush(stdin);
-    *isOn = checkQuit(board, scorePtr, input);
+    CleanCheck();
+    *isOn = CheckStay(board, scorePtr, input);
+    int success = 0;
     //TODO deal with all other valid inputs (dgbh)
-    return SlideBoard(board, scorePtr);
+    switch(input){
+        case 'd':
+            success = SlideBoard(board, scorePtr);
+            break;
+        case 'h':
+        printf("hello\n");
+            Rotate(board);
+            success = SlideBoard(board, scorePtr);
+            Rotate(board);
+            Rotate(board);
+            Rotate(board);
+            break;
+        case 'g':
+            Rotate(board);
+            Rotate(board);
+            success = SlideBoard(board, scorePtr);
+            Rotate(board);
+            Rotate(board);
+            break;
+        case 'b':
+            Rotate(board);
+            Rotate(board);
+            Rotate(board);
+            success = SlideBoard(board, scorePtr);
+            Rotate(board);
+            break;
+        default:
+            PromptMove(isOn, board, scorePtr);
+    }
+    return success;
+}
+
+void CleanCheck() {
+    getchar();
+    fflush(stdin);
 }
 
 int SlideBoard(int **b, int * score){
     // slide to the right, we'll use matrix rotation to take care of the other directions
-    int moves = 0;
-    for(int a = 0; a < 3; a++){
-        for(int i = 0; i < 4; i++){
-            for(int j= 2; j > 0; j--){
-                if(b[i][j] != 0 && b[i][j+1] == b[i][j]){
-                    b[i][j] = b[i][j+1];
-                    b[i][j+1] = 0;
-                    //moves++;
+    int moves = 0, fusions = 0;
+    int newVal, i, j, k, a;
+
+    for(a = 0; a < 3; a++){ //TODO optimize instead of applying worst case every time
+        for(i = 0; i < 4; i++){
+            for (j = 2; j >=0; j--){
+                if(b[i][j+1] == 0 && b[i][j] != 0){
+                    b[i][j+1] = b[i][j];
+                    b[i][j] = 0;
+                    moves++;
+
+                }
+            }
+        }
+    }
+
+    for(i = 0; i < 4; i++){
+        for(j= 2; j >= 0; j--){
+            if(b[i][j] != 0 && b[i][j+1] == b[i][j]){
+                newVal = b[i][j+1] << 1;
+                *score += newVal;
+                b[i][j+1] = newVal;
+                b[i][j] = 0;
+                fusions++;
+
+                for(k = j+1; k < 3; k++){ //move n° 2, only useful when there's a double merge in one row
+                    if(b[i][k+1] == 0 && b[i][k] != 0){
+                        b[i][k+1] = b[i][k];
+                        b[i][k] = 0;
+                        moves++;
+                    }
                 }
             }
         }
@@ -79,41 +141,29 @@ int SlideBoard(int **b, int * score){
 
     //fusion goes here
 
-
-    if(moves) {
+    if(moves || fusions) {
         return 1;
     } else {
         return 0;
     }
 }
-/*
-int SlideBoard(int **board, int * score){
-    // slide to the right, we'll use matrix rotation to take care of the other directions
-    int hasMoved = 0;
-    for(int a = 0; a < 3; a++){
-        for(int i = 0; i < 4; i++){
-            for(int j= 3; j > 0; j--){
-                if(board[i][j] == 0 && board[i][j-1] != 0){
-                    board[i][j] = board[i][j-1];
-                    board[i][j-1] = 0;
-                    hasMoved++;
-                }
-            }
+
+void Rotate(int **b) {
+    int ** aux = MakeBoard();
+    //CopyBoard(b, aux);
+    int rows = 4;
+    int cols = 4;
+    for (int i = 0; i < rows; i++) {
+        for (int j = cols - 1; j >= 0; j--) {
+                b[i][cols - 1 - j] = aux[j][i];           // yadda yadda... use AUX matrix or tmp var
         }
     }
-
-    //fusion goes here
-
-
-    if(hasMoved) {
-        return 1;
-    } else {
-        return 0;
-    }
+    DisplayBoard(b);
 }
-*/
 
-int menu(int **board, int *scorePtr) {
+
+
+int Menu(int **board, int *scorePtr) {
     printf("=_=_=_=_=_=_=_= 2048 =_=_=_=_=_=_=_=\n"
            "nouvelle partie:. n\n"
            "charger partie:.. l\n"
@@ -121,46 +171,46 @@ int menu(int **board, int *scorePtr) {
            ">");
 
     int input = getc(stdin);
-    fflush(stdin);
+    CleanCheck();
 
     switch (input) {
         case 'n':
-            newGame(board, scorePtr);
+            NewGame(board, scorePtr);
             return 1;
         case 'l':
-            loadGame();
+            LoadGame();
             return 1;
         case 'q': //if the player inputs 'q' in the menu, we exit the program
             return 0;
         default:
             printf("requete non comprise\n");
-            return menu(board, scorePtr);
+            return Menu(board, scorePtr);
     }
 }
 
-void newGame(int **board, int *scorePtr) {
+void NewGame(int **board, int *scorePtr) {
     *scorePtr = 0;
-
+    InitBoard(board);
     int spawned = 0;
     while (spawned < 2) {
-        spawned += spawnTile(board, 2);
+        spawned += SpawnTile(board, 2);
     }
 }
 
-void saveGame() {
+void SaveGame() {
     printf("saveGame(): to be implemented...\n");
     //TODO implement
     //csv-style file? easy format, 1st value is b[0][0], 2nd is b[0][1]... 16th is b[3][3], 17th (last) is the score
 }
 
-void loadGame() {
+void LoadGame() {
     printf("loadGame(): to be implemented...\n");
     //TODO implement
     //use the save file to fill the board and the score
 
 }
 
-int checkQuit(int **board, int *scorePtr, int input) {
+int CheckStay(int **board, int *scorePtr, int input) {
     //if the player types inputs 'q' during the game (instead of a move), we offer a save before exiting to menu
     if (input == 'q') {
         printf("sauvegarder avant de quitter?\n"
@@ -169,24 +219,25 @@ int checkQuit(int **board, int *scorePtr, int input) {
                ">");
 
         int input_bis = getc(stdin);
-        fflush(stdin);
+        CleanCheck();
 
         if (input_bis == 'n') {
-            return menu(board, scorePtr);
+            return Menu(board, scorePtr);
         } else {
-            saveGame();
-            return menu(board, scorePtr);
+            SaveGame();
+            return Menu(board, scorePtr);
         }
     }
+    return 1; //
 }
 
-int youWin(int **board, int score) {
+int YouWin(int **board, int score) {
     printf("felicitations! vous avez atteint \\_2_0_4_8_/\n"
            "votre score final: %d\n", score);
-    return menu(board, &score);
+    return Menu(board, &score);
 }
 
-int spawnTile(int **board, int val) {
+int SpawnTile(int **board, int val) {
     //TODO ? instead use a list of (x, y) coordinates (updated during play, containing all free tiles)
     int row = rand() % 4;
     int col = rand() % 4;

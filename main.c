@@ -15,7 +15,7 @@ int main() {
     int moveDone;           // a boolean: does the player need to try another move instead?
     //TODO do the pointer thingy with spawning
 
-    int isOn = menu(board, &score);
+    int isOn = Menu(board, &score);
     
     while (isOn) {
         DisplayBoard(board);
@@ -35,17 +35,16 @@ int main() {
 
         if (hasWon) {
             hasWon = 0; //we've taken the win into account, we can reinit this to 0 for next game
-            isOn = youWin(board, score);
+            isOn = YouWin(board, score);
         }
 
         if (!isFull) {
             spawned = 0;
             if (rand() % 2 == 1) { val = 2; } else { val = 4; }
             while (!spawned) {
-                spawned += spawnTile(board, val);
+                spawned += SpawnTile(board, val);
             }
         }
     }
-
     return 0;
 }
