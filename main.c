@@ -12,6 +12,8 @@ int main() {
     int scoreUp;            // the amount by which the score will be increased
     int spawned;            // the amount of tile succesfully spawned
     int val;                // the value to record in a tile
+    int freeTiles = 16;     // the number of free tiles
+    //TODO do the pointer thingy with spawning
 
     int isOn = menu(board, &score);
 
