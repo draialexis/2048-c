@@ -10,4 +10,6 @@
 #define FAIL_OUT printf("failing out\n");exit(EXIT_FAILURE);
 #define MALLOC_FAIL printf("!_malloc failed_!\n"); FAIL_OUT
 
+void Purge();
+
 #endif //INC_2048_C_TOOLBOX_H
