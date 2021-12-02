@@ -20,7 +20,7 @@ void InitBoard(int **T);
 int PromptMove(int *isOn, Game *gPtr);
 
 int Slide(Game *gPtr);
-
+void DisplayGame(Game *gPtr);
 void DisplayBoard(int **T);
 
 void FreeBoard(int **T);
@@ -39,7 +39,7 @@ void SaveGame();
 
 int YouWin(Game *gPtr);
 
-int SpawnTile(Game *gPtr, int val);
+void SpawnTiles(Game *gPtr, int val, int num);
 
 void CleanCheck();
 

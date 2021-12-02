@@ -5,16 +5,13 @@
 int main() {
     srand(time(NULL));
     Game * gPtr = MakeGame();
-    Game g = *gPtr;
-    int hasWon = 0, hasMoved = 0;  // pseudo-booleans: has the player won?has the player successfully moved ?
-    //TODO do the pointer thingy with spawning
-
-    int isOn = Menu(gPtr);
-    
+    int hasWon = 0, hasMoved = 0;  // pseudo-booleans: has the player won?has the player successfully moved?
+    int isOn = Menu(gPtr); // pseudo-boolean: is the game on?
+    int rdVal; // a random value to be used for tile spawning
     while (isOn) {
-        DisplayBoard(g.board);
+        DisplayGame(gPtr);
 
-        if(g.freeTiles == 0){
+        if(gPtr->freeTiles == 0){
             printf("if no possible merge, game over (to be implemented)\n");
         }
 
@@ -22,6 +19,9 @@ int main() {
         while(!hasMoved){
             hasMoved = PromptMove(&isOn, gPtr);
         }
+        rdVal = ((rand() % 2) + 1) * 2 ;
+        //rdm int value 'between 0+1 and 1+1' *2, so 'either 1 or 2' *2, so: 'either 2 or 4'
+        SpawnTiles(gPtr, rdVal, 1);
         //board-moving goes here
         // on every merge instance
         //... counting score...
