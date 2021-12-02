@@ -1,34 +1,48 @@
 #ifndef INC_2048_C_GAME_H
 #define INC_2048_C_GAME_H
 
+typedef struct Game_ {
+    int **board;
+    int score;
+    int freeTiles;
+    int isOn;
+
+} Game;
+
+Game* MakeGame();
+
+void InitGame(Game *gPtr);
+
 int **MakeBoard();
 
-int PromptMove(int *isOn, int **board, int *scorePtr);
+void InitBoard(int **T);
 
-int SlideBoard(int **board, int * score);
+int PromptMove(int *isOn, Game *gPtr);
+
+int Slide(Game *gPtr);
 
 void DisplayBoard(int **T);
 
-void FreeBoard(int **board);
+void FreeBoard(int **T);
 
-int Menu(int **board, int *scorePtr);
+void FreeGame(Game *gPtr);
 
-int CheckStay(int **board, int *scorePtr, int input);
+int Menu(Game *gPtr);
 
-void NewGame(int **board, int *scorePtr);
+int CheckStay(Game *gPtr, int input);
+
+void NewGame(Game *gPtr);
 
 void LoadGame();
 
 void SaveGame();
 
-int YouWin(int **board, int score);
+int YouWin(Game *gPtr);
 
-int SpawnTile(int **board, int val);
+int SpawnTile(Game *gPtr, int val);
 
 void CleanCheck();
 
 void Rotate(int **b);
-
-void InitBoard(int **T);
 
 #endif //INC_2048_C_GAME_H

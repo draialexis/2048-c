@@ -1,6 +1,16 @@
 #include "game.h"
 #include "toolbox.h"
 
+
+Game* MakeGame(){
+    Game * res = NULL;
+    res = (Game*) malloc(sizeof(Game));
+    if(res==NULL){
+        MALLOC_FAIL
+    }
+    return res;
+}
+
 //function that initiates the 4x4 table.(it has no parameters since the size is already set)
 int **MakeBoard(){
     int **T = NULL;
@@ -20,6 +30,12 @@ int **MakeBoard(){
     return T;
 }
 
+void InitGame(Game *gPtr) {
+    gPtr->board = MakeBoard();
+    gPtr->score = 0;
+    gPtr->freeTiles = 16;
+}
+
 void InitBoard(int **T){
     for(int i = 0; i < 4; i++){
         for(int j = 0; j < 4; j++){
@@ -35,63 +51,68 @@ void DisplayBoard(int **T){
         for(int j=0;j<4;j++){
             if(T==NULL){
                 //TODO error msg?
-                DEBUG
                 exit(0);
             }
             x = T[i][j];
-            if(x != 0) {printf("%d ", x);} else {printf("/ ");}
+            if(x != 0) {printf("%d ", x);} else {printf("# ");}
         }
         printf("\n");
     }
     printf("\n");
 }
 
-void FreeBoard(int **board){
-    if(board!=NULL){
+void FreeBoard(int **T){
+    if(T != NULL){
         for(int i = 0; i < 4; i++) {
-            if(board[i]!=NULL){
-                free(board[i]);
+            if(T[i] != NULL){
+                free(T[i]);
             }
         }
-        free(board);
+        free(T);
     }
 }
 
-int PromptMove(int *isOn, int **board, int *scorePtr) {
+void FreeGame(Game *gPtr){
+    if(gPtr != NULL){
+        FreeBoard(gPtr->board);
+    }
+    free(gPtr);
+}
+
+int PromptMove(int *isOn, Game *gPtr) {
     printf("make a move\n");
     int input = getc(stdin);
     CleanCheck();
-    *isOn = CheckStay(board, scorePtr, input);
+    *isOn = CheckStay(gPtr, input);
     int success = 0;
     //TODO deal with all other valid inputs (dgbh)
     switch(input){
         case 'd':
-            success = SlideBoard(board, scorePtr);
+            success = Slide(gPtr);
             break;
         case 'h':
-        printf("hello\n");
-            Rotate(board);
-            success = SlideBoard(board, scorePtr);
-            Rotate(board);
-            Rotate(board);
-            Rotate(board);
+            Rotate(gPtr->board);
+            success = Slide(gPtr);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
             break;
         case 'g':
-            Rotate(board);
-            Rotate(board);
-            success = SlideBoard(board, scorePtr);
-            Rotate(board);
-            Rotate(board);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
+            success = Slide(gPtr);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
             break;
         case 'b':
-            Rotate(board);
-            Rotate(board);
-            Rotate(board);
-            success = SlideBoard(board, scorePtr);
-            Rotate(board);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
+            Rotate(gPtr->board);
+            success = Slide(gPtr);
+            Rotate(gPtr->board);
             break;
         default:
-            PromptMove(isOn, board, scorePtr);
+            PromptMove(isOn, gPtr);
     }
     return success;
 }
@@ -101,7 +122,7 @@ void CleanCheck() {
     fflush(stdin);
 }
 
-int SlideBoard(int **b, int * score){
+int Slide(Game *gPtr){
     // slide to the right, we'll use matrix rotation to take care of the other directions
     int moves = 0, fusions = 0;
     int newVal, i, j, k, a;
@@ -109,11 +130,10 @@ int SlideBoard(int **b, int * score){
     for(a = 0; a < 3; a++){ //TODO optimize instead of applying worst case every time
         for(i = 0; i < 4; i++){
             for (j = 2; j >=0; j--){
-                if(b[i][j+1] == 0 && b[i][j] != 0){
-                    b[i][j+1] = b[i][j];
-                    b[i][j] = 0;
+                if(gPtr->board[i][j + 1] == 0 && gPtr->board[i][j] != 0){
+                    gPtr->board[i][j + 1] = gPtr->board[i][j];
+                    gPtr->board[i][j] = 0;
                     moves++;
-
                 }
             }
         }
@@ -121,17 +141,18 @@ int SlideBoard(int **b, int * score){
 
     for(i = 0; i < 4; i++){
         for(j= 2; j >= 0; j--){
-            if(b[i][j] != 0 && b[i][j+1] == b[i][j]){
-                newVal = b[i][j+1] << 1;
-                *score += newVal;
-                b[i][j+1] = newVal;
-                b[i][j] = 0;
+            if(gPtr->board[i][j] != 0 && gPtr->board[i][j + 1] == gPtr->board[i][j]){
+                newVal = gPtr->board[i][j + 1] << 1;
+                gPtr->score += newVal;
+                gPtr->board[i][j + 1] = newVal;
+                gPtr->board[i][j] = 0;
+                gPtr->freeTiles += 1;
                 fusions++;
 
                 for(k = j+1; k < 3; k++){ //move n° 2, only useful when there's a double merge in one row
-                    if(b[i][k+1] == 0 && b[i][k] != 0){
-                        b[i][k+1] = b[i][k];
-                        b[i][k] = 0;
+                    if(gPtr->board[i][k + 1] == 0 && gPtr->board[i][k] != 0){
+                        gPtr->board[i][k + 1] = gPtr->board[i][k];
+                        gPtr->board[i][k] = 0;
                         moves++;
                     }
                 }
@@ -163,7 +184,7 @@ void Rotate(int **b) {
 
 
 
-int Menu(int **board, int *scorePtr) {
+int Menu(Game *gPtr) {
     printf("=_=_=_=_=_=_=_= 2048 =_=_=_=_=_=_=_=\n"
            "nouvelle partie:. n\n"
            "charger partie:.. l\n"
@@ -175,7 +196,7 @@ int Menu(int **board, int *scorePtr) {
 
     switch (input) {
         case 'n':
-            NewGame(board, scorePtr);
+            NewGame(gPtr);
             return 1;
         case 'l':
             LoadGame();
@@ -184,16 +205,15 @@ int Menu(int **board, int *scorePtr) {
             return 0;
         default:
             printf("requete non comprise\n");
-            return Menu(board, scorePtr);
+            return Menu(gPtr);
     }
 }
 
-void NewGame(int **board, int *scorePtr) {
-    *scorePtr = 0;
-    InitBoard(board);
+void NewGame(Game *gPtr) {
+    InitGame(gPtr);
     int spawned = 0;
     while (spawned < 2) {
-        spawned += SpawnTile(board, 2);
+        spawned += SpawnTile(gPtr, 2);
     }
 }
 
@@ -210,7 +230,7 @@ void LoadGame() {
 
 }
 
-int CheckStay(int **board, int *scorePtr, int input) {
+int CheckStay(Game *gPtr, int input) {
     //if the player types inputs 'q' during the game (instead of a move), we offer a save before exiting to menu
     if (input == 'q') {
         printf("sauvegarder avant de quitter?\n"
@@ -222,28 +242,29 @@ int CheckStay(int **board, int *scorePtr, int input) {
         CleanCheck();
 
         if (input_bis == 'n') {
-            return Menu(board, scorePtr);
+            return Menu(gPtr);
         } else {
             SaveGame();
-            return Menu(board, scorePtr);
+            return Menu(gPtr);
         }
     }
     return 1; //
 }
 
-int YouWin(int **board, int score) {
+int YouWin(Game *gPtr) {
     printf("felicitations! vous avez atteint \\_2_0_4_8_/\n"
-           "votre score final: %d\n", score);
-    return Menu(board, &score);
+           "votre score final: %d\n", gPtr->score);
+    return Menu(gPtr);
 }
 
-int SpawnTile(int **board, int val) {
+int SpawnTile(Game *gPtr, int val) {
     //TODO ? instead use a list of (x, y) coordinates (updated during play, containing all free tiles)
     int row = rand() % 4;
     int col = rand() % 4;
 
-    if (board[row][col] == 0) {
-        board[row][col] = val;
+    if (gPtr->board[row][col] == 0) {
+        gPtr->board[row][col] = val;
+        gPtr->freeTiles -= 1;
         return 1;
     } else {
         return 0;

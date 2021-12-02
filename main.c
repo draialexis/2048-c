@@ -4,25 +4,23 @@
 
 int main() {
     srand(time(NULL));
-    int **board = MakeBoard();     // the game board
-    int isFull = 0;         // a boolean: is the board full?
-    int hasWon = 0;         // a boolean: has the player won?
-    int score;              // the current score
-    int scoreUp;            // the amount by which the score will be increased
-    int spawned;            // the amount of tile succesfully spawned
-    int val;                // the value to record in a tile
-    int freeTiles = 16;     // the number of free tiles
-    int moveDone;           // a boolean: does the player need to try another move instead?
+    Game * gPtr = MakeGame();
+    Game g = *gPtr;
+    int hasWon = 0, hasMoved = 0;  // pseudo-booleans: has the player won?has the player successfully moved ?
     //TODO do the pointer thingy with spawning
 
-    int isOn = Menu(board, &score);
+    int isOn = Menu(gPtr);
     
     while (isOn) {
-        DisplayBoard(board);
-        
-        moveDone = PromptMove(&isOn, board, &score);
-        while(!moveDone){
-            moveDone = PromptMove(&isOn, board, &score);
+        DisplayBoard(g.board);
+
+        if(g.freeTiles == 0){
+            printf("if no possible merge, game over (to be implemented)\n");
+        }
+
+        hasMoved = PromptMove(&isOn, gPtr);
+        while(!hasMoved){
+            hasMoved = PromptMove(&isOn, gPtr);
         }
         //board-moving goes here
         // on every merge instance
@@ -33,18 +31,10 @@ int main() {
         // if(scoreUp == 2048) hasWon = 1;
         //... after counting all the merge score_ups ...
 
-        if (hasWon) {
-            hasWon = 0; //we've taken the win into account, we can reinit this to 0 for next game
-            isOn = YouWin(board, score);
-        }
-
-        if (!isFull) {
-            spawned = 0;
-            if (rand() % 2 == 1) { val = 2; } else { val = 4; }
-            while (!spawned) {
-                spawned += SpawnTile(board, val);
-            }
-        }
+//        if (hasWon) {
+//            hasWon = 0; //we've taken the win into account, we can reinit this to 0 for next game
+//            isOn = YouWin(board, score);
+//        }
     }
     return 0;
 }
