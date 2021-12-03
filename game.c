@@ -142,6 +142,7 @@ void SpawnTiles(Game *gPtr, int val, int num) {
         int col = rand() % 4;
         int row = rand() % 4;
         if (gPtr->board[row][col] == 0) {
+            printf("[%d][%d] = %d\n", row, col, val);
             gPtr->board[row][col] = val;
             gPtr->freeTiles -= 1;
             spawned++;
@@ -150,7 +151,8 @@ void SpawnTiles(Game *gPtr, int val, int num) {
 }
 
 int PromptMove(int *isOn, Game *gPtr) {
-    printf("h | d | b | g\n");
+//    printf("h | d | b | g\n");
+//TODO reimplement gdbh before submitting
 
     int input = getc(stdin);
     Purge();
@@ -159,28 +161,28 @@ int PromptMove(int *isOn, Game *gPtr) {
         case 'd':
             success = Slide(gPtr);
             break;
-        case 'h': //rotate 90°, slide to the right, rotate another 270°
+        case 'z': //rotate 90°, slide to the right, rotate another 270°
             Rotate(gPtr->board);
             success = Slide(gPtr);
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             break;
-        case 'g': //rotate 180°, slide to the right, rotate another 180°
+        case 'q': //rotate 180°, slide to the right, rotate another 180°
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             success = Slide(gPtr);
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             break;
-        case 'b': //rotate 270°, slide to the right, rotate another 90°
+        case 's': //rotate 270°, slide to the right, rotate another 90°
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             Rotate(gPtr->board);
             success = Slide(gPtr);
             Rotate(gPtr->board);
             break;
-        case 'q':
+        case 'Q':
             printf("sauvegarder avant de quitter?\n"
                    "oui:... o\n"
                    "non:... n\n"
@@ -194,7 +196,8 @@ int PromptMove(int *isOn, Game *gPtr) {
             *isOn = 0;
             break;
         default:
-            PromptMove(isOn, gPtr);
+            printf("try another key\n");
+            return PromptMove(isOn, gPtr);
     }
     return success;
 }
