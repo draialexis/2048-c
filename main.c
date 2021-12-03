@@ -28,6 +28,7 @@ int main() {
 
         hasMoved = PromptMove(&isOn, gPtr);
         while (!hasMoved) {
+            printf("that didn't work\n");
             hasMoved = PromptMove(&isOn, gPtr);
         }
     }
