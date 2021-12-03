@@ -202,8 +202,9 @@ int PromptMove(int *isOn, Game *gPtr) {
 int Slide(Game *gPtr) {
     // slide to the right, we'll use matrix rotation to take care of the other directions
 
+    //TODO decide if we keep the counters moves and fusions
     int moves = 0, fusions = 0; //counters, to see if the move was valid
-    int hasFused = 0, hasWon = 0; //pseudo-booleans
+    int hasWon = 0; //pseudo-booleans
     int newVal, i, j, a;
 
     //moving tiles
@@ -222,9 +223,6 @@ int Slide(Game *gPtr) {
     //fusing tiles
     for (i = 0; i < 4; i++) {
         for (j = 2; j >= 0; j--) {
-            if (hasFused) {
-                hasFused = 0;
-            }
             if (gPtr->board[i][j] != 0 && gPtr->board[i][j + 1] == gPtr->board[i][j]) {
                 newVal = gPtr->board[i][j + 1] << 1;
                 if (newVal == 2048) {
@@ -235,16 +233,22 @@ int Slide(Game *gPtr) {
                 gPtr->board[i][j] = 0;
                 gPtr->freeTiles += 1;
                 fusions++;
-                hasFused = 1;//come back up one step on next iteration, in case a new merge is possible after a move
-            }
-            //just in case moves are made possible after fusions
-            if (j > 0 && gPtr->board[i][j - 1] != 0 && gPtr->board[i][j] == 0) {
-                gPtr->board[i][j] = gPtr->board[i][j - 1];
-                gPtr->board[i][j - 1] = 0;
-                moves++;
             }
         }
     }
+
+    for (a = 0; a < 3; a++) { //TODO optimize also
+        for (i = 0; i < 4; i++) {
+            for (j = 2; j >= 0; j--) {
+                if (gPtr->board[i][j + 1] == 0 && gPtr->board[i][j] != 0) {
+                    gPtr->board[i][j + 1] = gPtr->board[i][j];
+                    gPtr->board[i][j] = 0;
+                    moves++;
+                }
+            }
+        }
+    }
+
     if (moves || fusions) {
         if (hasWon) {
             YouWin(gPtr);
