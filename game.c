@@ -189,7 +189,7 @@ int PromptMove(int *isOn, Game *gPtr) {
             int input_bis = getc(stdin);
             Purge();
 
-            if (input_bis != 'n') {SaveGame();}
+            if (input_bis != 'n') { SaveGame(); }
             success = 1;
             *isOn = 0;
             break;
@@ -248,7 +248,7 @@ int Slide(Game *gPtr) {
     if (moves || fusions) {
         if (hasWon) {
             YouWin(gPtr);
-        } 
+        }
         return 1;
     } else {
         return 0;
@@ -284,6 +284,25 @@ int CheckStay(Game *gPtr, int input) {
         return 0;
     }
     return 1; //
+}
+
+void CheckLose(Game *gPtr) {
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+            if (gPtr->board[i][j] == gPtr->board[i][j + 1]
+                || gPtr->board[i][j] == gPtr->board[i + 1][j]) {
+                return;
+            }
+        }
+    }
+    YouLose(gPtr);
+}
+
+void YouLose(Game *gPtr) {
+    printf("=====Game Over=====\n"
+           "votre score final: %d\n", gPtr->score);
+    FreeGame(gPtr);
+    exit(EXIT_SUCCESS);
 }
 
 void YouWin(Game *gPtr) {

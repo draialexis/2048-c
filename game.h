@@ -43,6 +43,10 @@ void Rotate(int **b);
 
 int CheckStay(Game *gPtr, int input);
 
+void CheckLose(Game *gPtr);
+
+void YouLose(Game *gPtr);
+
 void YouWin(Game *gPtr);
 
 #endif //INC_2048_C_GAME_H

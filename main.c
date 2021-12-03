@@ -23,7 +23,7 @@ int main() {
         DisplayGame(gPtr);
 
         if (gPtr->freeTiles == 0) {
-            printf("if no possible merge, game over (to be implemented)\n");
+            CheckLose(gPtr);
         }
 
         hasMoved = PromptMove(&isOn, gPtr);
