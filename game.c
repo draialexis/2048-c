@@ -64,7 +64,7 @@ void DisplayBoard(int **T) {
                 exit(0);
             }
             x = T[i][j];
-            if (x != 0) { printf("%d ", x); } else { printf("# "); }
+            if (x != 0) { printf("%05d ", x); } else { printf("##### "); }
         }
         printf("\n");
     }
