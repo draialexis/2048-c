@@ -152,6 +152,7 @@ void SpawnTiles(Game *gPtr, int val, int num) {
 
 int PromptMove(int *isOn, Game *gPtr) {
     printf("h | d | b | g\n");
+
     int input = getc(stdin);
     Purge();
     *isOn = CheckStay(gPtr, input);

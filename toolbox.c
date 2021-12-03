@@ -1,6 +1,6 @@
 #include "toolbox.h"
 
 void Purge() {
-    fflush(stdin);
-    getchar();
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { }
 }
