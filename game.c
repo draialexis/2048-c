@@ -236,9 +236,8 @@ int Slide(Game *gPtr) {
     if (moves || fusions) {
         if (hasWon) {
             YouWin(gPtr);
-        } else {
-            return 1;
-        }
+        } 
+        return 1;
     } else {
         return 0;
     }
