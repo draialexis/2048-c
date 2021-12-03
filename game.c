@@ -144,7 +144,6 @@ void SpawnTiles(Game *gPtr, int val, int num) {
         if (gPtr->board[row][col] == 0) {
             gPtr->board[row][col] = val;
             gPtr->freeTiles -= 1;
-            printf("__spawned a %d at b[%d][%d]__\n", val, row, col);
             spawned++;
         }
     }
@@ -155,7 +154,6 @@ int PromptMove(int *isOn, Game *gPtr) {
 
     int input = getc(stdin);
     Purge();
-    *isOn = CheckStay(gPtr, input);
     int success = 0;
     switch (input) {
         case 'd':
@@ -181,6 +179,19 @@ int PromptMove(int *isOn, Game *gPtr) {
             Rotate(gPtr->board);
             success = Slide(gPtr);
             Rotate(gPtr->board);
+            break;
+        case 'q':
+            printf("sauvegarder avant de quitter?\n"
+                   "oui:... o\n"
+                   "non:... n\n"
+                   ">");
+
+            int input_bis = getc(stdin);
+            Purge();
+
+            if (input_bis != 'n') {SaveGame();}
+            success = 1;
+            *isOn = 0;
             break;
         default:
             PromptMove(isOn, gPtr);
@@ -267,12 +278,10 @@ int CheckStay(Game *gPtr, int input) {
         int input_bis = getc(stdin);
         Purge();
 
-        if (input_bis == 'n') {
-            return Menu(gPtr);
-        } else {
+        if (input_bis != 'n') {
             SaveGame();
-            return Menu(gPtr);
         }
+        return 0;
     }
     return 1; //
 }
