@@ -28,7 +28,7 @@ int main() {
 
         hasMoved = PromptMove(&isOn, gPtr);
         while (!hasMoved) {
-            printf("that didn't work\n");
+            printf("ce mouvement est impossible\n");
             hasMoved = PromptMove(&isOn, gPtr);
         }
     }

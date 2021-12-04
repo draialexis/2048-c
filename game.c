@@ -1,6 +1,8 @@
 #include "game.h"
 #include "toolbox.h"
 
+//TODO add validation everywhere
+
 Game *MakeGame() {
     Game *res = NULL;
     res = (Game *) malloc(sizeof(Game));
@@ -18,7 +20,7 @@ void InitGame(Game *gPtr) {
 
 void DisplayGame(Game *gPtr) {
     printf("score: %d\n", gPtr->score);
-    printf("free tiles: %d\n", gPtr->freeTiles);
+//    printf("free tiles: %d\n", gPtr->freeTiles);
     DisplayBoard(gPtr->board);
 }
 
@@ -64,7 +66,7 @@ void DisplayBoard(int **T) {
                 exit(0);
             }
             x = T[i][j];
-            if (x != 0) { printf("%05d ", x); } else { printf("##### "); }
+            if (x != 0) { printf("%04d ", x); } else { printf("#### "); }
         }
         printf("\n");
     }
@@ -99,7 +101,7 @@ int Menu(Game *gPtr) {
            "quitter:......... q\n"
            ">");
 
-    int input = getc(stdin);
+    int input = getchar();
     Purge();
 
     switch (input) {
@@ -125,7 +127,7 @@ void NewGame(Game *gPtr) {
 void SaveGame() {
     printf("saveGame(): to be implemented...\n");
     //TODO implement
-    //csv-style file? easy format, 1st value is b[0][0], 2nd is b[0][1]... 16th is b[3][3], 17th (last) is the score
+    //csv-style file? easy format, 1st is b[0][0], 2nd is b[0][1]... 16th is b[3][3], 17th is the score, 18th is free tiles
 }
 
 void LoadGame() {
@@ -142,7 +144,7 @@ void SpawnTiles(Game *gPtr, int val, int num) {
         int col = rand() % 4;
         int row = rand() % 4;
         if (gPtr->board[row][col] == 0) {
-            printf("[%d][%d] = %d\n", row, col, val);
+//            printf("[%d][%d] = %d\n", row, col, val);
             gPtr->board[row][col] = val;
             gPtr->freeTiles -= 1;
             spawned++;
@@ -151,12 +153,12 @@ void SpawnTiles(Game *gPtr, int val, int num) {
 }
 
 int PromptMove(int *isOn, Game *gPtr) {
-//    printf("h | d | b | g\n");
+//    printf("(h)aut | (d)roite | (g)auche | (b)as || (q)uitter\n");
 //TODO reimplement gdbh before submitting
 
-    int input = getc(stdin);
+    int input = getchar();
     Purge();
-    int success = 0;
+    int success;
     switch (input) {
         case 'd':
             success = Slide(gPtr);
@@ -188,7 +190,7 @@ int PromptMove(int *isOn, Game *gPtr) {
                    "non:... n\n"
                    ">");
 
-            int input_bis = getc(stdin);
+            int input_bis = getchar();
             Purge();
 
             if (input_bis != 'n') { SaveGame(); }
@@ -196,7 +198,7 @@ int PromptMove(int *isOn, Game *gPtr) {
             *isOn = 0;
             break;
         default:
-            printf("try another key\n");
+            printf("commande non valide\n");
             return PromptMove(isOn, gPtr);
     }
     return success;
@@ -282,7 +284,7 @@ int CheckStay(Game *gPtr, int input) {
                "non:... n\n"
                ">");
 
-        int input_bis = getc(stdin);
+        int input_bis = getchar();
         Purge();
 
         if (input_bis != 'n') {
