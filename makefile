@@ -3,7 +3,7 @@ CFLAGS=-c -Wall
 LDFLAGS=
 SOURCES=main.c toolbox.c game.c
 OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=main
+EXECUTABLE=game
 .PHONY: clean
 all: $(SOURCES) $(EXECUTABLE)
 
