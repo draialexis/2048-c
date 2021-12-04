@@ -37,9 +37,13 @@ void SpawnTiles(Game *gPtr, int val, int num);
 
 void PromptMove(int *isOn, Game *gPtr);
 
-int Slide(Game *gPtr);
+int DoMove(Game *gPtr);
 
-void Rotate(int **b);
+void Slide(Game *gPtr, int *hasMoved);
+
+void Fuse(Game *gPtr, int *hasFused, int *hasWon);
+
+void Rotate(int **b, int n);
 
 void CheckLose(Game *gPtr);
 
