@@ -35,13 +35,11 @@ void SaveGame();
 
 void SpawnTiles(Game *gPtr, int val, int num);
 
-int PromptMove(int *isOn, Game *gPtr);
+void PromptMove(int *isOn, Game *gPtr);
 
 int Slide(Game *gPtr);
 
 void Rotate(int **b);
-
-int CheckStay(Game *gPtr, int input);
 
 void CheckLose(Game *gPtr);
 
