@@ -1,5 +1,11 @@
 #ifndef INC_2048_C_GAME_H
 #define INC_2048_C_GAME_H
+
+#define H 512 //height of board
+#define W H //width of board
+#define L (W / 4) //length of a tile's side
+#define BPP 32 //bits per pixel
+
 /**
  * a struct to represent a game of 2048
  * @property board: a pointer to a 4x4 matrix of ints
