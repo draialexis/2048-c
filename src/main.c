@@ -1,5 +1,6 @@
-#include "toolbox.h"
-#include "game.h"
+#include <SDL.h>
+#include "../include/toolbox.h"
+#include "../include/game.h"
 
 
 int main() {

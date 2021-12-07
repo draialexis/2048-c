@@ -15,4 +15,8 @@
  */
 void Purge();
 
+void load(int **board);
+
+void save(int **board);
+
 #endif //INC_2048_C_TOOLBOX_H
