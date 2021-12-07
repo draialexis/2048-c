@@ -116,6 +116,7 @@ void SpawnTiles(Game *g, int val, int n);
  * executes user input for a move, with options for 'up', 'right', 'down', and 'left'; as well as for saving, quitting,
  * and both
  * @param isOn a pointer to a boolean, that can tell main() if Game must go on; set to 0 if quitting
+ * @param wasMove a pointer to a pseudo-boolean, that can tell main() if last action was a move; else, no spawn
  * @param g a pointer to a Game
  * @calls Purge()
  * @calls Rotate()
@@ -123,7 +124,7 @@ void SpawnTiles(Game *g, int val, int n);
  * @calls SaveGame()
  * @calls PromptMove()
  */
-void PromptMove(int *isOn, Game *g);
+void PromptMove(int *isOn, int *wasMove, Game *g);
 
 /**
  * accomplishes a move in a Game by sliding and fusing tiles to right

@@ -8,13 +8,14 @@ int main() {
 
     Game *g = MakeGame(); // pointer to game
     int isOn = Menu(g); // boolean: is game on?
+    int wasMove = 0; // boolean: was the last action actually a move?
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
 
     while (isOn) {
         if (isFirst) {
             isFirst = 0;
-        } else {
+        } else if (wasMove) {
             //rdm int value 'between 0+1 and 1+1' *2, so 'either 1 or 2' *2, so: 'either 2 or 4'
             rdVal = ((rand() % 2) + 1) * 2;
             //spawn a tile, of val 2 or 4, somewhere on board
@@ -27,7 +28,7 @@ int main() {
             CheckLose(g);
         }
 
-        PromptMove(&isOn, g);
+        PromptMove(&isOn, &wasMove, g);
     }
     return 0;
 }

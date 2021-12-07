@@ -184,7 +184,7 @@ void SpawnTiles(Game *g, int val, int n) {
     }
 }
 
-void PromptMove(int *isOn, Game *g) {
+void PromptMove(int *isOn, int *wasMove, Game *g) {
     if (g == NULL || isOn == NULL) {
         printf("could not find game tp prompt move, or other invalid param\n");
         FAIL_OUT
@@ -195,24 +195,30 @@ void PromptMove(int *isOn, Game *g) {
     int input = getchar();
     Purge();
     int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
+    *wasMove = 0;
+    int input_bis;
     switch (input) {
         case 'z': //UP:     rotate 90°, slide to right, rotate another 270°
             Rotate(g->board, 1);
             isSuccess = Move(g);
             Rotate(g->board, 3);
+            if (isSuccess) { *wasMove = 1; }
             break;
         case 'd': //RIGHT:  slide to right
             isSuccess = Move(g);
+            if (isSuccess) { *wasMove = 1; }
             break;
         case 'q': //DOWN:   rotate 180°, slide to right, rotate another 180°
             Rotate(g->board, 2);
             isSuccess = Move(g);
             Rotate(g->board, 2);
+            if (isSuccess) { *wasMove = 1; }
             break;
         case 's': //LEFT:   rotate 270°, slide to right, rotate another 90°
             Rotate(g->board, 3);
             isSuccess = Move(g);
             Rotate(g->board, 1);
+            if (isSuccess) { *wasMove = 1; }
             break;
         case 'Q':
             printf("sauvegarder avant de quitter?\n"
@@ -220,7 +226,7 @@ void PromptMove(int *isOn, Game *g) {
                    "non:... n\n"
                    ">");
 
-            int input_bis = getchar();
+            input_bis = getchar();
             Purge();
 
             if (input_bis != 'n') { SaveGame(g); }
@@ -237,7 +243,6 @@ void PromptMove(int *isOn, Game *g) {
     }
     if (!isSuccess) {
         printf("mouvement impossible\n");
-        PromptMove(isOn, g);
     }
 }
 
