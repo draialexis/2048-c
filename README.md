@@ -13,7 +13,6 @@ bin/prog
 ```
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc src/main.o `sdl-config --libs` -o bin/prog
-
 ```
 ---
 
