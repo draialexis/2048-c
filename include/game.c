@@ -147,22 +147,51 @@ void SaveGame(Game *g) {
         printf("could not find game to save\n");
         FAIL_OUT
     }
-    printf("saveGame(): to be implemented...\n");
+    printf("saving...\n");
+    FILE *fp = NULL;
+    char *fname = "data/save.txt";
+    fp = fopen(fname, "w+");
+    CheckFOpen(fp, fname);
 
-    //TODO implement
-    //csv-style file? easy format, 1st is b[0][0], 2nd is b[0][1]... 16th is b[3][3], 17th is score, 18th is free tiles
-    //at end, if success, print "partie sauvegardee"
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            fprintf(fp, "%d ", g->board[i][j]);
+        }
+        fprintf(fp, "\n");
+    }
+    fprintf(fp, "%d ", g->score);
+    fprintf(fp, "%d ", g->free_tiles);
+    fclose(fp);
+    printf("game saved\n");
+    //TODO at end, if success, print "partie sauvegardee"
 }
 
 void LoadGame(Game *g) {
     if (g == NULL) {
-        printf("could not find game to load\n");
+        printf("could not find game object to load onto\n");
         FAIL_OUT
     }
-    printf("loadGame(): to be implemented...\n");
+    printf("loading...\n");
+    FILE *fp = NULL;
+    char *fname = "data/save.txt";
+    fp = fopen(fname, "r");
+    CheckFOpen(fp, fname);
 
-    //TODO implement
-    //use save file to fill board and score
+    int tmp;
+    InitGame(g);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            fscanf(fp, "%d ", &tmp);
+            g->board[i][j] = tmp;
+        }
+        fscanf(fp, "\n");
+    }
+    fscanf(fp, "%d ", &tmp);
+    g->score = tmp;
+    fscanf(fp, "%d ", &tmp);
+    g->free_tiles = tmp;
+    printf("game loaded\n");
+    fclose(fp);
 }
 
 void SpawnTiles(Game *g, int val, int n) {
@@ -234,9 +263,30 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
             *isOn = 0;
             break;
         case 'S':
-            SaveGame(g);
-            isSuccess = 1;
-            PromptMove(isOn, g);
+            printf("ecraser la derniere sauvegarde?\n"
+                   "oui:... o\n"
+                   "non:... n\n"
+                   ">");
+            input_bis = getchar();
+            Purge();
+            if (input_bis == 'o') {
+                SaveGame(g);
+                isSuccess = 1;
+            }
+            break;
+        case 'L':
+            printf("quitter et charger la derniere sauvegarde?\n"
+                   "oui:... o\n"
+                   "non:... n\n"
+                   ">");
+
+            input_bis = getchar();
+            Purge();
+            if (input_bis == 'o') {
+                LoadGame(g);
+                isSuccess = 1;
+            }
+            break;
         default:
             printf("commande non valide\n");
             break;
