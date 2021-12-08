@@ -12,12 +12,8 @@ bin/prog
 * Linux without ***make***
 ```
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
-gcc src/main.o `sdl-config --libs` -o bin/prog
-```
----
-
-* Windows (very well might not work, can't figure it out ^^')
-```
-gcc src/main.c -o bin/prog -I include -L lib -lSDLmain -lSDL
+gcc -c -Wall `sdl-config --cflags` include/toolbox.c -o include/toolbox.o
+gcc -c -Wall `sdl-config --cflags` include/game.c -o include/game.o
+gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -o bin/prog
 bin/prog
 ```
