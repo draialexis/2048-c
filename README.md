@@ -1,15 +1,15 @@
 # 2048 in C
 2-person university project to code 2048 in C, using SDL
 ([instructions.pdf](https://github.com/draialexis/2048-c/files/7647069/TP_DM_subj.pdf))
----
-* Linux with ***make***
+
+## Compiling and executing
+You will need to install SDL 1.2 on you system first.
+### Linux with ***make***
 ```
 make
 bin/prog
 ```
----
-
-* Linux without ***make***
+### Linux without ***make***
 ```
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc -c -Wall `sdl-config --cflags` include/toolbox.c -o include/toolbox.o
