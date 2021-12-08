@@ -15,4 +15,12 @@
  */
 void Purge();
 
+/**
+ * checks if a file was open successfully; exits with error if not
+ * @param f a pointer to the FILE
+ * @param f_name the name of the file
+ */
+void CheckFOpen(FILE *f, char *f_name);
+
+
 #endif //INC_2048_C_TOOLBOX_H

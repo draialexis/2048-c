@@ -1,5 +1,11 @@
 #ifndef INC_2048_C_GAME_H
 #define INC_2048_C_GAME_H
+
+#define H 512 //height of board
+#define W H //width of board
+#define L (W / 4) //length of a tile's side
+#define BPP 32 //bits per pixel
+
 /**
  * a struct to represent a game of 2048
  * @property board: a pointer to a 4x4 matrix of ints
@@ -116,6 +122,7 @@ void SpawnTiles(Game *g, int val, int n);
  * executes user input for a move, with options for 'up', 'right', 'down', and 'left'; as well as for saving, quitting,
  * and both
  * @param isOn a pointer to a boolean, that can tell main() if Game must go on; set to 0 if quitting
+ * @param wasMove a pointer to a pseudo-boolean, that can tell main() if last action was a move; else, no spawn
  * @param g a pointer to a Game
  * @calls Purge()
  * @calls Rotate()
@@ -123,7 +130,7 @@ void SpawnTiles(Game *g, int val, int n);
  * @calls SaveGame()
  * @calls PromptMove()
  */
-void PromptMove(int *isOn, Game *g);
+void PromptMove(int *isOn, int *wasMove, Game *g);
 
 /**
  * accomplishes a move in a Game by sliding and fusing tiles to right
