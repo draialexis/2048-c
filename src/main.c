@@ -1,5 +1,3 @@
-#include <SDL.h>
-#include "../include/SDL.h"//<<<<TODO remove before shipping
 #include "../include/toolbox.h"
 #include "../include/game.h"
 
@@ -7,20 +5,6 @@
 int main(int argc, char **argv) {
 
     srand(time(NULL));
-
-    /*SDL_Surface *screen = NULL;
-    SDL_Surface *rect = NULL;
-    SDL_Rect pos;*/
-
-    /*if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
-    }
-*/
-    /*if ((screen = SDL_SetVideoMode(W, H, BPP, SDL_HWSURFACE)) == NULL) {
-        fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
-    }*/
 
     Game *g = MakeGame(); // pointer to game
     int isOn = Menu(g); // boolean: is game on?
@@ -46,9 +30,6 @@ int main(int argc, char **argv) {
 
         PromptMove(&isOn, &wasMove, g);
     }
-
-    /*SDL_FreeSurface(screen);
-    SDL_Quit();*/
 
     return EXIT_SUCCESS;
 }
