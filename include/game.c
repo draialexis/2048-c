@@ -123,8 +123,12 @@ int Menu(Game *g) {
             NewGame(g);
             return 1;
         case 'l':
-            LoadGame(g);
-            return 1;
+            if (LoadGame(g)) {
+                return 1;
+            } else {
+                printf("sauvegarde introuvable ou impossible a lire\n");
+                return Menu(g);
+            }
         case 'q':
             return 0;
         default:
@@ -147,51 +151,56 @@ void SaveGame(Game *g) {
         printf("could not find game to save\n");
         FAIL_OUT
     }
-    printf("saving...\n");
+    printf("sauvegarde...\n");
     FILE *fp = NULL;
     char *fname = "data/save.txt";
     fp = fopen(fname, "w+");
-    CheckFOpen(fp, fname);
-
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            fprintf(fp, "%d ", g->board[i][j]);
+    if (isFOpen(fp, fname)) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                fprintf(fp, "%d ", g->board[i][j]);
+            }
+            fprintf(fp, "\n");
         }
-        fprintf(fp, "\n");
+        fprintf(fp, "%d ", g->score);
+        fprintf(fp, "%d ", g->free_tiles);
+        fclose(fp);
+        printf("partie sauvegardee\n");
+    } else {
+        FAIL_OUT
     }
-    fprintf(fp, "%d ", g->score);
-    fprintf(fp, "%d ", g->free_tiles);
-    fclose(fp);
-    printf("game saved\n");
-    //TODO at end, if success, print "partie sauvegardee"
 }
 
-void LoadGame(Game *g) {
+
+int LoadGame(Game *g) {
     if (g == NULL) {
         printf("could not find game object to load onto\n");
         FAIL_OUT
     }
-    printf("loading...\n");
+    printf("chargement...\n");
     FILE *fp = NULL;
     char *fname = "data/save.txt";
     fp = fopen(fname, "r");
-    CheckFOpen(fp, fname);
-
-    int tmp;
-    InitGame(g);
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            fscanf(fp, "%d ", &tmp);
-            g->board[i][j] = tmp;
+    if (isFOpen(fp, fname)) {
+        int tmp;
+        InitGame(g);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                fscanf(fp, "%d ", &tmp);
+                g->board[i][j] = tmp;
+            }
+            fscanf(fp, "\n");
         }
-        fscanf(fp, "\n");
+        fscanf(fp, "%d ", &tmp);
+        g->score = tmp;
+        fscanf(fp, "%d ", &tmp);
+        g->free_tiles = tmp;
+        printf("partie chargee\n");
+        fclose(fp);
+        return 1;
+    } else {
+        return 0;
     }
-    fscanf(fp, "%d ", &tmp);
-    g->score = tmp;
-    fscanf(fp, "%d ", &tmp);
-    g->free_tiles = tmp;
-    printf("game loaded\n");
-    fclose(fp);
 }
 
 void SpawnTiles(Game *g, int val, int n) {

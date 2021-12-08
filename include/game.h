@@ -106,8 +106,9 @@ void SaveGame(Game *g);
 /**
  * loads a Game from a unique .txt save file in program's root folder, with a default name: 'save_2048.txt'
  * @param g a pointer to a Game
+ * @return if a file was able to be loaded, 1; else, 0
  */
-void LoadGame(Game *g);
+int LoadGame(Game *g);
 
 /**
  * sets a number of random '0-locations' in a 4x4 matrix of ints, i.e. a 2048 board, to certain values;
