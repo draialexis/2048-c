@@ -3,8 +3,6 @@ CMakeLists.txt
 /cmake-build-debug
 /.idea
 bin/prog
-data/save.txt
-data/backup.txt
 src/main.o
 include/game.o
 include/toolbox.o

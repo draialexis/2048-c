@@ -1,8 +1,9 @@
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 #include "../include/SDL.h"//<<<<TODO remove before shipping
 #include "../include/toolbox.h"
 #include "../include/game.h"
-
 
 int main(int argc, char **argv) {
 
