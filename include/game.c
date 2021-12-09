@@ -1,8 +1,6 @@
 #include "game.h"
 #include "toolbox.h"
 
-//TODO add validation everywhere
-
 Game *MakeGame() {
     Game *res = NULL;
     res = (Game *) malloc(sizeof(Game));
@@ -208,7 +206,6 @@ void SpawnTiles(Game *g, int val, int n) {
         printf("could not find game to spawn tiles, or other invalid param\n");
         FAIL_OUT
     }
-    //TODO ? use something else than rand()
     int spawned = 0; // number of tiles spawned
     while (spawned < n) {
         int col = rand() % 4;
@@ -227,8 +224,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
         printf("could not find game tp prompt move, or other invalid param\n");
         FAIL_OUT
     }
-//    printf("(h)aut | (d)roite | (g)auche | (b)as || (q)uitter | (s)auvegarder\n");
-//TODO reimplement gdbh and q before submitting, use s for save
+    printf("(h)aut | (d)roite | (g)auche | (b)as || (q)uitter | (s)auvegarder | (c)harger\n");
 
     int input = getchar();
     Purge();
@@ -236,7 +232,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
     *wasMove = 0;
     int input_bis;
     switch (input) {
-        case 'z': //UP:     rotate 90°, slide to right, rotate another 270°
+        case 'h': //UP:     rotate 90°, slide to right, rotate another 270°
             Rotate(g->board, 1);
             isSuccess = Move(g);
             Rotate(g->board, 3);
@@ -246,19 +242,19 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
             isSuccess = Move(g);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'q': //DOWN:   rotate 180°, slide to right, rotate another 180°
-            Rotate(g->board, 2);
-            isSuccess = Move(g);
-            Rotate(g->board, 2);
-            if (isSuccess) { *wasMove = 1; }
-            break;
-        case 's': //LEFT:   rotate 270°, slide to right, rotate another 90°
+        case 'b': //DOWN:   rotate 180°, slide to right, rotate another 180°
             Rotate(g->board, 3);
             isSuccess = Move(g);
             Rotate(g->board, 1);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'Q':
+        case 'g': //LEFT:   rotate 270°, slide to right, rotate another 90°
+            Rotate(g->board, 2);
+            isSuccess = Move(g);
+            Rotate(g->board, 2);
+            if (isSuccess) { *wasMove = 1; }
+            break;
+        case 'q':
             printf("sauvegarder avant de quitter?\n"
                    "oui:... o\n"
                    "non:... n\n"
@@ -271,7 +267,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
             isSuccess = 1;
             *isOn = 0;
             break;
-        case 'S':
+        case 's':
             printf("ecraser la derniere sauvegarde?\n"
                    "oui:... o\n"
                    "non:... n\n"
@@ -283,7 +279,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
                 isSuccess = 1;
             }
             break;
-        case 'L':
+        case 'c':
             printf("quitter et charger la derniere sauvegarde?\n"
                    "oui:... o\n"
                    "non:... n\n"
@@ -330,7 +326,6 @@ void Slide(Game *g, int *hasMoved) {
         FAIL_OUT
     }
     //slide to right; we use matrix rotation to take care of other directions
-    //TODO ? optimize instead of applying worst case every time
     for (int a = 0; a < 3; a++) {
         for (int i = 0; i < 4; i++) {
             for (int j = 2; j >= 0; j--) {
@@ -411,7 +406,6 @@ void YouLose(Game *g) {
     }
     printf("=====Game Over=====\nvotre score final: %d\n", g->score);
     FreeGame(g);
-    //TODO delete savefile if exists?
     exit(EXIT_SUCCESS);
 }
 

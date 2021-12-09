@@ -1,7 +1,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include <SDL_image.h>
-#include "../include/SDL.h"//<<<<TODO remove before shipping
+#include "../include/SDL.h"//<<<<TODO remove #include before shipping
+#include "../include/SDL_ttf.h"//<<<<TODO remove HEADER FILE before shipping
 #include "../include/toolbox.h"
 #include "../include/game.h"
 
@@ -9,20 +9,37 @@ int main(int argc, char **argv) {
 
     srand(time(NULL));
 
-    /*SDL_Surface *screen = NULL;
-    SDL_Surface *rect = NULL;
-    SDL_Rect pos;*/
-
     /*if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-*/
-    /*if ((screen = SDL_SetVideoMode(W, H, BPP, SDL_HWSURFACE)) == NULL) {
+    if (TTF_Init() == -1) {
+        fprintf(stderr, "\nUnable to initialize TTF: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    SDL_Surface *rect = NULL;
+    SDL_Rect pos, pos_title, pos_menu;
+    SDL_Surface *screen = NULL;
+    screen = SDL_SetVideoMode(W, H, BPP, SDL_HWSURFACE);//DOUBLEBUF?
+    char * fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
+    TTF_Font *fnt = NULL;
+    fnt = TTF_OpenFont(fntPath, 12);
+
+    if (screen == NULL) {
         fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
-    }*/
+    }
 
+    if (fnt == NULL) {
+        fprintf(stderr, "\nUnable to load TTF font: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+    SDL_WM_SetCaption("2048", NULL);
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
+
+    SDL_Color charcoal = {33, 33, 33};
+*/
     Game *g = MakeGame(); // pointer to game
     int isOn = Menu(g); // boolean: is game on?
     int wasMove = 0; // boolean: was the last action actually a move?
@@ -48,8 +65,9 @@ int main(int argc, char **argv) {
         PromptMove(&isOn, &wasMove, g);
     }
 
-    /*SDL_FreeSurface(screen);
-    SDL_Quit();*/
+//    SDL_FreeSurface(screen);
+//    TTF_Quit();
+//    SDL_Quit();
 
     return EXIT_SUCCESS;
 }
