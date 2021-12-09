@@ -242,13 +242,13 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
             isSuccess = Move(g);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'b': //DOWN:   rotate 180°, slide to right, rotate another 180°
+        case 'b': //DOWN:   rotate 270°, slide to right, rotate another 90°
             Rotate(g->board, 3);
             isSuccess = Move(g);
             Rotate(g->board, 1);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'g': //LEFT:   rotate 270°, slide to right, rotate another 90°
+        case 'g': //LEFT:   rotate 180°, slide to right, rotate another 180°
             Rotate(g->board, 2);
             isSuccess = Move(g);
             Rotate(g->board, 2);
