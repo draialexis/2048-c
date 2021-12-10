@@ -106,8 +106,8 @@ int **CopyBoard(int **board) {
     return res;
 }
 
-int Menu(Game *g, SDL_Surface *screen {
-    if (g == NULL || screen == NULL | fnt == NULL) {
+int Menu(Game *g, SDL_Surface *screen) {
+    if (g == NULL || screen == NULL) {
         printf("could not find game to use for menu, or other missing parameter\n");
         FAIL_OUT
     }
@@ -148,8 +148,8 @@ int Menu(Game *g, SDL_Surface *screen {
                     case 'q':
                         return 0;
                     default:
-                        //to avoid warnings: does nothing, which is what we want
-                        break;
+                        printf("commande non comprise\n");
+                        return Menu(g, screen);
                 }
         }
     }
