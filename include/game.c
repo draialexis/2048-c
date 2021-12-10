@@ -148,8 +148,8 @@ int Menu(Game *g, SDL_Surface *screen) {
                     case 'q':
                         return 0;
                     default:
-                        //to avoid warnings: does nothing, which is what we want
-                        break;
+                        printf("commande non comprise\n");
+                        return Menu(g, screen);
                 }
         }
     }
