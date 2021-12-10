@@ -134,6 +134,8 @@ int Menu(Game *g, SDL_Surface *screen) {
                 return 0;
             case SDL_KEYDOWN:
                 switch (evt.key.keysym.sym) {
+                    case SDL_QUIT:
+                        return 0;
                     case 'n':
                         NewGame(g);
                         return 1;
