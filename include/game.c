@@ -1,3 +1,7 @@
+#include <SDL.h>// TODO remove later?
+#include <SDL_ttf.h>// TODO remove later?
+//#include "SDL.h"//<<<<TODO remove #include before shipping
+//#include "SDL_ttf.h"//<<<<TODO remove #include before shipping
 #include "game.h"
 #include "toolbox.h"
 
@@ -102,36 +106,52 @@ int **CopyBoard(int **board) {
     return res;
 }
 
-int Menu(Game *g) {
-    if (g == NULL) {
-        printf("could not find game to use for menu\n");
+int Menu(Game *g, SDL_Surface *screen {
+    if (g == NULL || screen == NULL | fnt == NULL) {
+        printf("could not find game to use for menu, or other missing parameter\n");
         FAIL_OUT
     }
-    printf("=_=_=_=_=_ 2048 _=_=_=_=_=\n"
-           "nouvelle partie:. n\n"
-           "charger partie:.. l\n"
-           "quitter:......... q\n"
-           ">");
+    char *fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
+    TTF_Font *fnt = NULL;
+    fnt = TTF_OpenFont(fntPath, 24);
 
-    int input = getchar();
-    Purge();
+    SDL_Rect pos;
+    pos.x = 50;
+    pos.y = 50;
+    SDL_Surface *menu = NULL;
+    SDL_Color charcoal = {33, 33, 33};
+    menu = TTF_RenderText_Blended(fnt, "(n)ew | (l)oad | (q)uit", charcoal);
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
+    SDL_BlitSurface(menu, NULL, screen, &pos);
+    SDL_Flip(screen);
 
-    switch (input) {
-        case 'n':
-            NewGame(g);
-            return 1;
-        case 'l':
-            if (LoadGame(g)) {
-                return 1;
-            } else {
-                printf("sauvegarde introuvable ou impossible a lire\n");
-                return Menu(g);
-            }
-        case 'q':
-            return 0;
-        default:
-            printf("requete non comprise\n");
-            return Menu(g);
+    int isOn = 1;
+    SDL_Event evt;
+    while (isOn) {
+        SDL_WaitEvent(&evt);
+        switch (evt.type) {
+            case SDL_QUIT:
+                return 0;
+            case SDL_KEYDOWN:
+                switch (evt.key.keysym.sym) {
+                    case 'n':
+                        NewGame(g);
+                        return 1;
+                    case 'l':
+                        if (LoadGame(g)) {
+                            return 1;
+                        } else {
+                            printf("sauvegarde introuvable ou impossible a lire\n");
+                            return Menu(g, screen);
+                        }
+                        break;
+                    case 'q':
+                        return 0;
+                    default:
+                        //to avoid warnings: does nothing, which is what we want
+                        break;
+                }
+        }
     }
 }
 

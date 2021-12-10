@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
 
     srand(time(NULL));
 
-    /*if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
@@ -18,13 +18,13 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    SDL_Surface *rect = NULL;
-    SDL_Rect pos, pos_title, pos_menu;
     SDL_Surface *screen = NULL;
+
     screen = SDL_SetVideoMode(W, H, BPP, SDL_HWSURFACE);//DOUBLEBUF?
+
     char * fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
     TTF_Font *fnt = NULL;
-    fnt = TTF_OpenFont(fntPath, 12);
+    fnt = TTF_OpenFont(fntPath, 16);
 
     if (screen == NULL) {
         fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
@@ -38,10 +38,9 @@ int main(int argc, char **argv) {
     SDL_WM_SetCaption("2048", NULL);
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
 
-    SDL_Color charcoal = {33, 33, 33};
-*/
     Game *g = MakeGame(); // pointer to game
-    int isOn = Menu(g); // boolean: is game on?
+
+    int isOn = Menu(g, screen); // boolean: is game on?
     int wasMove = 0; // boolean: was the last action actually a move?
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
@@ -65,9 +64,9 @@ int main(int argc, char **argv) {
         PromptMove(&isOn, &wasMove, g);
     }
 
-//    SDL_FreeSurface(screen);
-//    TTF_Quit();
-//    SDL_Quit();
+    SDL_FreeSurface(screen);
+    TTF_Quit();
+    SDL_Quit();
 
     return EXIT_SUCCESS;
 }
