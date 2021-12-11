@@ -22,14 +22,28 @@ void InitGame(Game *g) {
     g->free_tiles = 16;
 }
 
-void DisplayGame(Game *g) {
+void DisplayGame(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
     if (g == NULL) {
         printf("could not find game to display\n");
         FAIL_OUT
     }
-    printf("score: %d\n", g->score);
-//    printf("free tiles: %d\n", g->free_tiles);
-    DisplayBoard(g->board);
+
+//    printf("score: %d\n", g->score);
+    //TODO TTF stuff
+    /*
+    SDL_Rect pos;
+    pos.x = 500;
+    pos.y = 30;
+    SDL_Surface *menu = NULL;
+    SDL_Color charcoal = {33, 33, 33};
+    menu = TTF_RenderText_Blended(fnt, "(n)ew | (l)oad | (q)uit", charcoal);
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
+    SDL_BlitSurface(menu, NULL, screen, &pos);
+    SDL_Flip(screen);
+
+     */
+
+    DisplayBoard(g->board, screen, fnt);
 }
 
 void FreeGame(Game *g) {
@@ -69,18 +83,88 @@ void InitBoard(int **board) {
     }
 }
 
-void DisplayBoard(int **board) {
+void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
     if (board == NULL) {
         printf("could not find board to display\n");
         FAIL_OUT
     }
+    SDL_Rect pos;
+    pos.x = 0;
+    pos.y = HDR;
+    SDL_Surface *tile = NULL, *sdl_board = NULL;
+
+    sdl_board = SDL_CreateRGBSurface(SDL_HWSURFACE, W_B, H_B, BPP, 0, 0, 0, 0);
+    SDL_FillRect(sdl_board, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
+    SDL_BlitSurface(sdl_board, NULL, screen, &pos);
+
+    pos.x += PAD;
+    pos.y += PAD;
+
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (board[i][j] != 0) { printf("%04d ", board[i][j]); }
-            else { printf("#### "); }
+            Uint32 clr;
+            int val_int = board[i][j];
+            switch (val_int) {
+                case 0:
+                    clr = SDL_MapRGB(screen->format, 250, 250, 250);
+                    break;
+                case 2:
+                    clr = SDL_MapRGB(screen->format, 235, 215, 188);
+                    break;
+                case 4:
+                    clr = SDL_MapRGB(screen->format, 222, 189, 146);
+                    break;
+                case 8:
+                    clr = SDL_MapRGB(screen->format, 215, 175, 123);
+                    break;
+                case 16:
+                    clr = SDL_MapRGB(screen->format, 202, 153, 87);
+                    break;
+                case 32:
+                    clr = SDL_MapRGB(screen->format, 185, 131, 57);
+                    break;
+                case 64:
+                    clr = SDL_MapRGB(screen->format, 151, 106, 47);
+                    break;
+                case 128:
+                    clr = SDL_MapRGB(screen->format, 132, 64, 45);
+                    break;
+                case 256:
+                    clr = SDL_MapRGB(screen->format, 109, 53, 37);
+                    break;
+                case 512:
+                    clr = SDL_MapRGB(screen->format, 89, 44, 30);
+                    break;
+                case 1024:
+                    clr = SDL_MapRGB(screen->format, 70, 34, 23);
+                    break;
+                case 2048:
+                    clr = SDL_MapRGB(screen->format, 48, 36, 33);
+                    break;
+                default:
+                    clr = SDL_MapRGB(screen->format, 255, 0, 0);
+                    //this should never happen
+                    break;
+            }
+            tile = SDL_CreateRGBSurface(SDL_HWSURFACE, TIL, TIL, BPP, 0, 0, 0, 0);
+            SDL_FillRect(tile, NULL, clr);
+            SDL_BlitSurface(tile, NULL, screen, &pos);
+            if (val_int != 0) {
+                char val_str[5];
+                sprintf(val_str, "%d", val_int);
+                SDL_Color sea = {24, 153, 211};
+                SDL_Surface *tile_val = TTF_RenderText_Blended(fnt, val_str, sea);
+                SDL_Rect pos_val;
+                pos_val.x = (short)(pos.x + PAD);
+                pos_val.y = (short)(pos.y + PAD);
+                SDL_BlitSurface(tile_val, NULL, screen, &pos_val);
+            }
+            pos.x += TIL + PAD;
         }
-        printf("\n");
+        pos.x = PAD;
+        pos.y += TIL + PAD;
     }
+    SDL_Flip(screen);
 }
 
 void FreeBoard(int **board) {
@@ -106,18 +190,15 @@ int **CopyBoard(int **board) {
     return res;
 }
 
-int Menu(Game *g, SDL_Surface *screen) {
+int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
     if (g == NULL || screen == NULL) {
         printf("could not find game to use for menu, or other missing parameter\n");
         FAIL_OUT
     }
-    char *fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
-    TTF_Font *fnt = NULL;
-    fnt = TTF_OpenFont(fntPath, 24);
 
     SDL_Rect pos;
-    pos.x = 50;
-    pos.y = 50;
+    pos.x = PAD;
+    pos.y = PAD;
     SDL_Surface *menu = NULL;
     SDL_Color charcoal = {33, 33, 33};
     menu = TTF_RenderText_Blended(fnt, "(n)ew | (l)oad | (q)uit", charcoal);
@@ -137,29 +218,30 @@ int Menu(Game *g, SDL_Surface *screen) {
                     case SDL_QUIT:
                         return 0;
                     case 'n':
-                        NewGame(g);
+                        NewGame(g, screen);
                         return 1;
                     case 'l':
                         if (LoadGame(g)) {
                             return 1;
                         } else {
                             printf("sauvegarde introuvable ou impossible a lire\n");
-                            return Menu(g, screen);
+                            return Menu(g, screen, fnt);
                         }
                         break;
                     case 'q':
                         return 0;
                     default:
                         printf("commande non comprise\n");
-                        return Menu(g, screen);
+                        return Menu(g, screen, fnt);
                 }
         }
     }
+    return 0; // cannot be reached, in practice...
 }
 
-void NewGame(Game *g) {
-    if (g == NULL) {
-        printf("could not find game to start new\n");
+void NewGame(Game *g, SDL_Surface *screen) {
+    if (g == NULL || screen == NULL) {
+        printf("could not find game or screen to start\n");
         FAIL_OUT
     }
     InitGame(g);
@@ -241,7 +323,7 @@ void SpawnTiles(Game *g, int val, int n) {
     }
 }
 
-void PromptMove(int *isOn, int *wasMove, Game *g) {
+void PromptMove(int *isOn, int *wasMove, Game *g, TTF_Font *fnt) {
     if (g == NULL || isOn == NULL) {
         printf("could not find game tp prompt move, or other invalid param\n");
         FAIL_OUT
