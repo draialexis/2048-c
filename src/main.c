@@ -46,25 +46,26 @@ int main(int argc, char **argv) {
     int isFirst = 1; // boolean: is it round 1?
 
     SDL_Color charcoal = {33, 33, 33};
-    int cntr = 0, crt_time = 0, prv_time = 0, time_unit = 1000;
+    int current_time = 0, prev_time = 0, second = 1000;//counter_dis, current time
     char time_str[32] = "";
-    SDL_Surface *counter = TTF_RenderText_Solid(fnt, time_str, charcoal);
+    SDL_Surface *counter_dis = TTF_RenderText_Solid(fnt, time_str, charcoal);//time counter display
     SDL_Rect pos;
+
     while (isOn) {
         SDL_FreeSurface(screen);
         SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 230, 230, 230));
 
-        crt_time = SDL_GetTicks();
-        if (crt_time - prv_time >= time_unit) {
-            cntr += time_unit;
-            sprintf(time_str, "secondes : %d", cntr / 1000);
-            SDL_FreeSurface(counter);
-            counter = TTF_RenderText_Blended(fnt, time_str, charcoal);
-            prv_time = crt_time;
+        current_time = (int) SDL_GetTicks();
+        if (current_time - prev_time >= second) {
+            g->seconds += second;
+            sprintf(time_str, "secondes : %d", g->seconds / 1000);
+            SDL_FreeSurface(counter_dis);
+            counter_dis = TTF_RenderText_Blended(fnt, time_str, charcoal);
+            prev_time = current_time;
         }
         pos.x = PAD;
         pos.y = PAD + 60;
-        SDL_BlitSurface(counter, NULL, screen, &pos);
+        SDL_BlitSurface(counter_dis, NULL, screen, &pos);
         SDL_Flip(screen);
 
 

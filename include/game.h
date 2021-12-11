@@ -20,6 +20,7 @@ typedef struct Game_ {
     int **board;
     int score;
     int free_tiles;
+    int seconds;
 } Game;
 
 /**

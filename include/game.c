@@ -18,6 +18,7 @@ void InitGame(Game *g) {
     g->board = MakeBoard();
     g->score = 0;
     g->free_tiles = 16;
+    g->seconds = 0;
 }
 
 void DisplayGame(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
@@ -197,9 +198,8 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
 
     SDL_Flip(screen);
 
-    int isOn = 1;
     SDL_Event evt;
-    while (isOn) {
+    while (1) {
         SDL_WaitEvent(&evt);
         switch (evt.type) {
             case SDL_QUIT:
@@ -223,7 +223,6 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
                         break;
                     default:
                         SDL_FreeSurface(menu);
-                        printf("commande non comprise\n");
                         return Menu(g, screen, fnt);
                 }
         }
@@ -258,6 +257,7 @@ void SaveGame(Game *g) {
         }
         fprintf(fp, "%d ", g->score);
         fprintf(fp, "%d ", g->free_tiles);
+        fprintf(fp, "%d ", g->seconds);
         fclose(fp);
         printf("partie sauvegardee\n");
     } else {
@@ -288,6 +288,8 @@ int LoadGame(Game *g) {
         g->score = tmp;
         fscanf(fp, "%d ", &tmp);
         g->free_tiles = tmp;
+        fscanf(fp, "%d ", &tmp);
+        g->seconds = tmp;
         printf("partie chargee\n");
         fclose(fp);
         return 1;
@@ -365,7 +367,6 @@ void PromptMove(int *isOn, int *wasMove, Game *g, SDL_Surface *screen, TTF_Font 
             }
     }
 }
-
 
 int Move(Game *g) {
     if (g == NULL) {
