@@ -25,75 +25,28 @@ void DisplayGame(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
         printf("could not find game to display\n");
         FAIL_OUT
     }
-
-//    printf("score: %d\n", g->score);
-    //TODO TTF stuff
-    /*
-    SDL_Rect pos;
-    pos.x = 500;
-    pos.y = 30;
-    SDL_Surface *menu = NULL;
     SDL_Color charcoal = {33, 33, 33};
-    menu = TTF_RenderText_Blended(fnt, "(n)ew | (l)oad | (q)uit", charcoal);
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
-    SDL_BlitSurface(menu, NULL, screen, &pos);
-    SDL_Flip(screen);
-
-     */
-
-    DisplayBoard(g->board, screen, fnt);
-}
-
-void FreeGame(Game *g) {
-    if (g != NULL) {
-        FreeBoard(g->board);
-        free(g);
-    }
-}
-
-int **MakeBoard() {
-    int **board = NULL;
-    board = malloc(4 * sizeof(int *));
-    if (board == NULL) { MALLOC_FAIL }
-
-    for (int i = 0; i < 4; i++) {
-        board[i] = NULL;
-        board[i] = malloc(4 * (sizeof(int)));
-        if (board[i] == NULL) {
-            FreeBoard(board);
-            MALLOC_FAIL
-        }
-    }
-
-    InitBoard(board);
-    return board;
-}
-
-void InitBoard(int **board) {
-    if (board == NULL) {
-        printf("could not find board to initialize\n");
-        FAIL_OUT
-    }
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            board[i][j] = 0;
-        }
-    }
-}
-
-void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
-    if (board == NULL) {
-        printf("could not find board to display\n");
-        FAIL_OUT
-    }
     SDL_Rect pos;
+
+    char *prompt_str = "(s)auver | (c)harger";
+
+    pos.x = PAD;
+    pos.y = PAD;
+    SDL_Surface *prompt = NULL;
+    prompt = TTF_RenderText_Blended(fnt, prompt_str, charcoal);
+    SDL_BlitSurface(prompt, NULL, screen, &pos);
+
+    pos.x = PAD;
+    pos.y = PAD + 30;
+    SDL_Surface *score_dis = NULL;
+    char score_str[32];
+    sprintf(score_str, "score : %d", g->score);
+    score_dis = TTF_RenderText_Blended(fnt, score_str, charcoal);
+    SDL_BlitSurface(score_dis, NULL, screen, &pos);
+
     pos.x = 0;
     pos.y = HDR;
-    SDL_Surface *tile = NULL, *sdl_board = NULL;
-
-    sdl_board = SDL_CreateRGBSurface(SDL_HWSURFACE, W_B, H_B, BPP, 0, 0, 0, 0);
-    SDL_FillRect(sdl_board, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
-    SDL_BlitSurface(sdl_board, NULL, screen, &pos);
+    SDL_Surface *tile = NULL;
 
     pos.x += PAD;
     pos.y += PAD;
@@ -101,7 +54,7 @@ void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             Uint32 clr;
-            int val_int = board[i][j];
+            int val_int = g->board[i][j];
             switch (val_int) {
                 case 0:
                     clr = SDL_MapRGB(screen->format, 250, 250, 250);
@@ -163,6 +116,46 @@ void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
         pos.y += TIL + PAD;
     }
     SDL_Flip(screen);
+    SDL_FreeSurface(prompt);
+    SDL_FreeSurface(score_dis);
+    SDL_FreeSurface(tile);
+}
+
+void FreeGame(Game *g) {
+    if (g != NULL) {
+        FreeBoard(g->board);
+        free(g);
+    }
+}
+
+int **MakeBoard() {
+    int **board = NULL;
+    board = malloc(4 * sizeof(int *));
+    if (board == NULL) { MALLOC_FAIL }
+
+    for (int i = 0; i < 4; i++) {
+        board[i] = NULL;
+        board[i] = malloc(4 * (sizeof(int)));
+        if (board[i] == NULL) {
+            FreeBoard(board);
+            MALLOC_FAIL
+        }
+    }
+
+    InitBoard(board);
+    return board;
+}
+
+void InitBoard(int **board) {
+    if (board == NULL) {
+        printf("could not find board to initialize\n");
+        FAIL_OUT
+    }
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            board[i][j] = 0;
+        }
+    }
 }
 
 void FreeBoard(int **board) {
@@ -193,15 +186,15 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
         printf("could not find game to use for menu, or other missing parameter\n");
         FAIL_OUT
     }
+    SDL_Color charcoal = {33, 33, 33};
 
     SDL_Rect pos;
     pos.x = PAD;
     pos.y = PAD;
     SDL_Surface *menu = NULL;
-    SDL_Color charcoal = {33, 33, 33};
     menu = TTF_RenderText_Blended(fnt, "(n)ouveau | (c)harger", charcoal);
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
     SDL_BlitSurface(menu, NULL, screen, &pos);
+
     SDL_Flip(screen);
 
     int isOn = 1;
@@ -223,11 +216,13 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
                             SDL_FreeSurface(menu);
                             return 1;
                         } else {
+                            SDL_FreeSurface(menu);
                             printf("sauvegarde introuvable ou impossible a lire\n");
                             return Menu(g, screen, fnt);
                         }
                         break;
                     default:
+                        SDL_FreeSurface(menu);
                         printf("commande non comprise\n");
                         return Menu(g, screen, fnt);
                 }
@@ -324,22 +319,6 @@ void PromptMove(int *isOn, int *wasMove, Game *g, SDL_Surface *screen, TTF_Font 
         printf("could not find game tp prompt move, or other invalid param\n");
         FAIL_OUT
     }
-
-    SDL_Rect pos;
-    pos.x = 0;
-    pos.y = 0;
-    SDL_Surface *header = NULL;
-    header = SDL_CreateRGBSurface(SDL_HWSURFACE, W_B, HDR, BPP, 0, 0, 0, 0);
-    SDL_FillRect(header, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
-    SDL_BlitSurface(header, NULL, screen, &pos);
-
-    pos.x = PAD;
-    pos.y = PAD;
-    SDL_Surface *prompt = NULL;
-    SDL_Color charcoal = {33, 33, 33};
-    prompt = TTF_RenderText_Blended(fnt, "(s)auver | (c)harger", charcoal);
-    SDL_BlitSurface(prompt, NULL, screen, &pos);
-    SDL_Flip(screen);
 
     int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
     *wasMove = 0;

@@ -26,9 +26,9 @@ int main(int argc, char **argv) {
         fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
 
     SDL_WM_SetCaption("2048", NULL);
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 250, 250, 250));
 
     Game *g = MakeGame(); // pointer to game
 
@@ -45,7 +45,29 @@ int main(int argc, char **argv) {
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
 
+    SDL_Color charcoal = {33, 33, 33};
+    int cntr = 0, crt_time = 0, prv_time = 0, time_unit = 1000;
+    char time_str[32] = "";
+    SDL_Surface *counter = TTF_RenderText_Solid(fnt, time_str, charcoal);
+    SDL_Rect pos;
     while (isOn) {
+        SDL_FreeSurface(screen);
+        SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 230, 230, 230));
+
+        crt_time = SDL_GetTicks();
+        if (crt_time - prv_time >= time_unit) {
+            cntr += time_unit;
+            sprintf(time_str, "secondes : %d", cntr / 1000);
+            SDL_FreeSurface(counter);
+            counter = TTF_RenderText_Blended(fnt, time_str, charcoal);
+            prv_time = crt_time;
+        }
+        pos.x = PAD;
+        pos.y = PAD + 60;
+        SDL_BlitSurface(counter, NULL, screen, &pos);
+        SDL_Flip(screen);
+
+
         if (isFirst) {
             isFirst = 0;
         } else if (wasMove) {
@@ -64,6 +86,7 @@ int main(int argc, char **argv) {
         PromptMove(&isOn, &wasMove, g, screen, fnt);
     }
 
+    TTF_CloseFont(fnt);
     SDL_FreeSurface(screen);
     TTF_Quit();
     SDL_Quit();

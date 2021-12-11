@@ -3,8 +3,8 @@
 
 #define HEI 640 //height of screen
 #define WID 480 //width of screen
-#define H_B 480 //width of screen
-#define W_B 480 //width of screen
+#define H_B 480 //height of board
+#define W_B 480 //width of board
 #define HDR (HEI - WID) //height of header for score and timer
 #define PAD 10 //size of padding
 #define TIL ((WID - (PAD * 5)) / 4) //length of a tile's side
