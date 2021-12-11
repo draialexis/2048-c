@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
             CheckLose(g);
         }
 
-        PromptMove(&isOn, &wasMove, g, fnt);
+        PromptMove(&isOn, &wasMove, g, screen, fnt);
     }
 
     SDL_FreeSurface(screen);

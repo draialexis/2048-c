@@ -1,7 +1,5 @@
 #include <SDL.h>// TODO remove later?
 #include <SDL_ttf.h>// TODO remove later?
-//#include "SDL.h"//<<<<TODO remove #include before shipping
-//#include "SDL_ttf.h"//<<<<TODO remove #include before shipping
 #include "game.h"
 #include "toolbox.h"
 
@@ -94,7 +92,7 @@ void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
     SDL_Surface *tile = NULL, *sdl_board = NULL;
 
     sdl_board = SDL_CreateRGBSurface(SDL_HWSURFACE, W_B, H_B, BPP, 0, 0, 0, 0);
-    SDL_FillRect(sdl_board, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
+    SDL_FillRect(sdl_board, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
     SDL_BlitSurface(sdl_board, NULL, screen, &pos);
 
     pos.x += PAD;
@@ -155,8 +153,8 @@ void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt) {
                 SDL_Color sea = {24, 153, 211};
                 SDL_Surface *tile_val = TTF_RenderText_Blended(fnt, val_str, sea);
                 SDL_Rect pos_val;
-                pos_val.x = (short)(pos.x + PAD);
-                pos_val.y = (short)(pos.y + PAD);
+                pos_val.x = (short) (pos.x + PAD);
+                pos_val.y = (short) (pos.y + PAD);
                 SDL_BlitSurface(tile_val, NULL, screen, &pos_val);
             }
             pos.x += TIL + PAD;
@@ -201,8 +199,8 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
     pos.y = PAD;
     SDL_Surface *menu = NULL;
     SDL_Color charcoal = {33, 33, 33};
-    menu = TTF_RenderText_Blended(fnt, "(n)ew | (l)oad | (q)uit", charcoal);
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 150, 150, 150));
+    menu = TTF_RenderText_Blended(fnt, "(n)ouveau | (c)harger", charcoal);
+    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
     SDL_BlitSurface(menu, NULL, screen, &pos);
     SDL_Flip(screen);
 
@@ -212,24 +210,23 @@ int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt) {
         SDL_WaitEvent(&evt);
         switch (evt.type) {
             case SDL_QUIT:
+                SDL_FreeSurface(menu);
                 return 0;
             case SDL_KEYDOWN:
                 switch (evt.key.keysym.sym) {
-                    case SDL_QUIT:
-                        return 0;
                     case 'n':
+                        SDL_FreeSurface(menu);
                         NewGame(g, screen);
                         return 1;
-                    case 'l':
+                    case 'c':
                         if (LoadGame(g)) {
+                            SDL_FreeSurface(menu);
                             return 1;
                         } else {
                             printf("sauvegarde introuvable ou impossible a lire\n");
                             return Menu(g, screen, fnt);
                         }
                         break;
-                    case 'q':
-                        return 0;
                     default:
                         printf("commande non comprise\n");
                         return Menu(g, screen, fnt);
@@ -272,7 +269,6 @@ void SaveGame(Game *g) {
         FAIL_OUT
     }
 }
-
 
 int LoadGame(Game *g) {
     if (g == NULL) {
@@ -323,87 +319,74 @@ void SpawnTiles(Game *g, int val, int n) {
     }
 }
 
-void PromptMove(int *isOn, int *wasMove, Game *g, TTF_Font *fnt) {
+void PromptMove(int *isOn, int *wasMove, Game *g, SDL_Surface *screen, TTF_Font *fnt) {
     if (g == NULL || isOn == NULL) {
         printf("could not find game tp prompt move, or other invalid param\n");
         FAIL_OUT
     }
-    printf("(h)aut | (d)roite | (g)auche | (b)as || (q)uitter | (s)auvegarder | (c)harger\n");
 
-    int input = getchar();
-    Purge();
+    SDL_Rect pos;
+    pos.x = 0;
+    pos.y = 0;
+    SDL_Surface *header = NULL;
+    header = SDL_CreateRGBSurface(SDL_HWSURFACE, W_B, HDR, BPP, 0, 0, 0, 0);
+    SDL_FillRect(header, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
+    SDL_BlitSurface(header, NULL, screen, &pos);
+
+    pos.x = PAD;
+    pos.y = PAD;
+    SDL_Surface *prompt = NULL;
+    SDL_Color charcoal = {33, 33, 33};
+    prompt = TTF_RenderText_Blended(fnt, "(s)auver | (c)harger", charcoal);
+    SDL_BlitSurface(prompt, NULL, screen, &pos);
+    SDL_Flip(screen);
+
     int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
     *wasMove = 0;
-    int input_bis;
-    switch (input) {
-        case 'h': //UP:     rotate 90°, slide to right, rotate another 270°
-            Rotate(g->board, 1);
-            isSuccess = Move(g);
-            Rotate(g->board, 3);
-            if (isSuccess) { *wasMove = 1; }
-            break;
-        case 'd': //RIGHT:  slide to right
-            isSuccess = Move(g);
-            if (isSuccess) { *wasMove = 1; }
-            break;
-        case 'b': //DOWN:   rotate 270°, slide to right, rotate another 90°
-            Rotate(g->board, 3);
-            isSuccess = Move(g);
-            Rotate(g->board, 1);
-            if (isSuccess) { *wasMove = 1; }
-            break;
-        case 'g': //LEFT:   rotate 180°, slide to right, rotate another 180°
-            Rotate(g->board, 2);
-            isSuccess = Move(g);
-            Rotate(g->board, 2);
-            if (isSuccess) { *wasMove = 1; }
-            break;
-        case 'q':
-            printf("sauvegarder avant de quitter?\n"
-                   "oui:... o\n"
-                   "non:... n\n"
-                   ">");
-
-            input_bis = getchar();
-            Purge();
-
-            if (input_bis != 'n') { SaveGame(g); }
-            isSuccess = 1;
+    SDL_Event evt;
+    SDL_WaitEvent(&evt);
+    switch (evt.type) {
+        case SDL_QUIT:
             *isOn = 0;
             break;
-        case 's':
-            printf("ecraser la derniere sauvegarde?\n"
-                   "oui:... o\n"
-                   "non:... n\n"
-                   ">");
-            input_bis = getchar();
-            Purge();
-            if (input_bis == 'o') {
-                SaveGame(g);
-                isSuccess = 1;
+        case SDL_KEYDOWN:
+            switch (evt.key.keysym.sym) {
+                case SDLK_UP://UP: rotate 90°, slide to right, rotate another 270°
+                    Rotate(g->board, 1);
+                    isSuccess = Move(g);
+                    Rotate(g->board, 3);
+                    if (isSuccess) { *wasMove = 1; }
+                    break;
+                case SDLK_RIGHT://RIGHT: slide to right
+                    isSuccess = Move(g);
+                    if (isSuccess) { *wasMove = 1; }
+                    break;
+                case SDLK_DOWN://DOWN: rotate 270°, slide to right, rotate another 90°
+                    Rotate(g->board, 3);
+                    isSuccess = Move(g);
+                    Rotate(g->board, 1);
+                    if (isSuccess) { *wasMove = 1; }
+                    break;
+                case SDLK_LEFT://LEFT: rotate 180°, slide to right, rotate another 180°
+                    Rotate(g->board, 2);
+                    isSuccess = Move(g);
+                    Rotate(g->board, 2);
+                    if (isSuccess) { *wasMove = 1; }
+                    break;
+                case 's':
+                    SaveGame(g);
+                    isSuccess = 1;
+                    break;
+                case 'c':
+                    LoadGame(g);
+                    isSuccess = 1;
+                    break;
+                default:
+                    break;
             }
-            break;
-        case 'c':
-            printf("quitter et charger la derniere sauvegarde?\n"
-                   "oui:... o\n"
-                   "non:... n\n"
-                   ">");
-
-            input_bis = getchar();
-            Purge();
-            if (input_bis == 'o') {
-                LoadGame(g);
-                isSuccess = 1;
-            }
-            break;
-        default:
-            printf("commande non valide\n");
-            break;
-    }
-    if (!isSuccess) {
-        printf("mouvement impossible\n");
     }
 }
+
 
 int Move(Game *g) {
     if (g == NULL) {
@@ -522,5 +505,3 @@ void YouWin(Game *g) {
     FreeGame(g);
     exit(EXIT_SUCCESS);
 }
-
-

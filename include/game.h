@@ -128,7 +128,7 @@ void SpawnTiles(Game *g, int val, int n);
  * @param g a pointer to a Game
  * @param fnt a pointer to a TTF_Font
  */
-void PromptMove(int *isOn, int *wasMove, Game *g, TTF_Font *fnt);
+void PromptMove(int *isOn, int *wasMove, Game *g, SDL_Surface *screen, TTF_Font *fnt);
 
 /**
  * accomplishes a move in a Game by sliding and fusing tiles to right
