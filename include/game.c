@@ -14,8 +14,9 @@ void InitGame(Game *g) {
     }
     g->board = MakeBoard();
     g->score = 0;
-    g->free_tiles = 16;
     g->seconds = 0;
+    g->wasMove = 0;
+    g->status = 0;
 }
 
 void DisplayGame(Game *g) {
@@ -230,12 +231,17 @@ int Menu(Game *g) {
                 exit(EXIT_SUCCESS);
             case SDL_KEYDOWN:
                 switch (evt.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        TTF_CloseFont(g->fnt);
+                        SDL_FreeSurface(menu);
+                        SDL_FreeSurface(g->screen);
+                        exit(EXIT_SUCCESS);
                     case 'n':
                         SDL_FreeSurface(menu);
                         NewGame(g);
                         return 1;
                     case 'c':
-                        if (LoadGame(g)) {
+                        if (LoadGame(g)) {//loads game if a save file exists
                             SDL_FreeSurface(menu);
                             return 1;
                         } else {
@@ -279,8 +285,8 @@ void SaveGame(Game *g) {
             fprintf(fp, "\n");
         }
         fprintf(fp, "%d ", g->score);
-        fprintf(fp, "%d ", g->free_tiles);
         fprintf(fp, "%d ", g->seconds);
+        fprintf(fp, "%d ", g->wasMove);
         fclose(fp);
         printf("partie sauvegardee\n");
     } else {
@@ -310,9 +316,11 @@ int LoadGame(Game *g) {
         fscanf(fp, "%d ", &tmp);
         g->score = tmp;
         fscanf(fp, "%d ", &tmp);
-        g->free_tiles = tmp;
-        fscanf(fp, "%d ", &tmp);
         g->seconds = tmp;
+        fscanf(fp, "%d ", &tmp);
+        g->wasMove = tmp;
+        g->isOn = 1;
+        g->status = 0;
         printf("partie chargee\n");
         fclose(fp);
         return 1;
@@ -333,49 +341,51 @@ void SpawnTiles(Game *g, int val, int n) {
         if (g->board[row][col] == 0) {
 //            printf("[%d][%d] = %d\n", row, col, val);
             g->board[row][col] = val;
-            g->free_tiles -= 1;
             spawned++;
         }
     }
 }
 
-void PromptMove(int *isOn, int *wasMove, Game *g) {
-    if (g == NULL || isOn == NULL) {
-        printf("could not find game tp prompt move, or other invalid param\n");
+void PromptMove(Game *g) {
+    if (g == NULL) {
+        printf("could not find game to prompt move, or other invalid param\n");
         FAIL_OUT
     }
 
     int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
-    *wasMove = 0;
+    g->wasMove = 0;
     SDL_Event evt;
     SDL_WaitEvent(&evt);
     switch (evt.type) {
         case SDL_QUIT:
-            *isOn = 0;
+            g->isOn = 0;
             break;
         case SDL_KEYDOWN:
             switch (evt.key.keysym.sym) {
+                case SDLK_ESCAPE:
+                    g->isOn = 0;
+                    break;
                 case SDLK_UP://UP: rotate 90°, slide to right, rotate another 270°
                     Rotate(g->board, 1);
                     isSuccess = Move(g);
                     Rotate(g->board, 3);
-                    if (isSuccess) { *wasMove = 1; }
+                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case SDLK_RIGHT://RIGHT: slide to right
                     isSuccess = Move(g);
-                    if (isSuccess) { *wasMove = 1; }
+                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case SDLK_DOWN://DOWN: rotate 270°, slide to right, rotate another 90°
                     Rotate(g->board, 3);
                     isSuccess = Move(g);
                     Rotate(g->board, 1);
-                    if (isSuccess) { *wasMove = 1; }
+                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case SDLK_LEFT://LEFT: rotate 180°, slide to right, rotate another 180°
                     Rotate(g->board, 2);
                     isSuccess = Move(g);
                     Rotate(g->board, 2);
-                    if (isSuccess) { *wasMove = 1; }
+                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case 's':
                     SaveGame(g);
@@ -438,11 +448,9 @@ void Fuse(Game *g, int *hasFused) {
         for (int j = 2; j >= 0; j--) {
             if (g->board[i][j] != 0 && g->board[i][j + 1] == g->board[i][j]) {
                 int newVal = g->board[i][j + 1] << 1;
-                if (newVal == 2048) { EndGame(g, 0); }
                 g->score += newVal;
                 g->board[i][j + 1] = newVal;
                 g->board[i][j] = 0;
-                g->free_tiles += 1;
                 *hasFused = 1;
             }
         }
@@ -467,29 +475,32 @@ void Rotate(int **board, int n) {
     }
 }
 
-int CheckLose(Game *g) {
+int CheckStatus(Game *g) {
     if (g == NULL) {
-        printf("could not find game to check lose\n");
+        printf("could not find game to check status\n");
         FAIL_OUT
     }
-    if (g->free_tiles > 0) {
-        printf("Uh oh -- there are free tiles on board, we shouldn't be checking for game over\n");
-        DEBUG
-        return 0;
-    }
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (g->board[i][j] == g->board[i][j + 1] ||
-                g->board[i][j] == g->board[i + 1][j]) {
-                return 0;
-                //a move is possible: we exit before reaching EndGame(), player can figure it out
+    int isFree = 0;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (g->board[i][j] == 2048) { return 1; }
+            if (g->board[i][j] == 0) { isFree = 1; }
+            if (i < 3 && j < 3) {
+                if (g->board[i][j] == g->board[i][j + 1] ||
+                    g->board[i][j] == g->board[i + 1][j]) {
+                    isFree = 1;
+                }
             }
         }
     }
-    return EndGame(g, 1);
+    if (isFree) {
+        return 0;
+    } else {
+        return 2;
+    }
 }
 
-int EndGame(Game *g, int isLose) {
+int EndGame(Game *g) {
     if (g == NULL) {
         printf("could not find game to end\n");
         FAIL_OUT
@@ -517,20 +528,22 @@ int EndGame(Game *g, int isLose) {
 
     pos.y += H_T;
     char gameover[64];
-    if (isLose) {
-        sprintf(gameover, "Game Over... retour au (m)enu ?");
-    } else {
-        sprintf(gameover, "2 0 4 8 !... retour au (m)enu ?");
+    if (g->status == 2) {
+        sprintf(gameover, "Game Over... (m)enu ?");
+    } else if (g->status == 1) {
+        sprintf(gameover, "2 0 4 8 !.. (m)enu ?");
     }
     SDL_Surface *gameover_dis = TTF_RenderText_Blended(g->fnt, gameover, g->fnt_clr);
     SDL_BlitSurface(gameover_dis, NULL, g->screen, &pos);
 
     SDL_Flip(g->screen);
-
     SDL_Event evt;
     SDL_WaitEvent(&evt);
     switch (evt.type) {
         case SDL_QUIT:
+            SDL_FreeSurface(score_dis);
+            SDL_FreeSurface(gameover_dis);
+            free(hdr);
             FreeGame(g);
             exit(EXIT_SUCCESS);
         case SDL_KEYDOWN:
@@ -553,5 +566,5 @@ int EndGame(Game *g, int isLose) {
                     break;
             }
     }
-    return EndGame(g, isLose);
+    return EndGame(g);
 }

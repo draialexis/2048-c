@@ -15,8 +15,10 @@
  * a struct to represent a game of 2048
  * @properties board: a pointer to a 4x4 matrix of ints, i.e. a 2048 board
  * @properties score: an int for player score
- * @properties free_tiles: an int for remaining number of free tiles on board
  * @properties seconds: an int number of seconds passed since start of game
+ * @properties isOn: boolean: is game on?
+ * @properties wasMove: boolean: was the last action actually a move?
+ * @properties status: 1 for win, 2 for lose, 0 for nothing
  * @properties screen: a pointer to an SDL_Surface
  * @properties fnt: a pointer to a TTF_Font
  * @properties fnt_clr: a pointer to an SDL_Color
@@ -24,8 +26,10 @@
 typedef struct Game_ {
     int **board;
     int score;
-    int free_tiles;
     int seconds;
+    int isOn;
+    int wasMove;
+    int status;
     SDL_Surface *screen;
     TTF_Font *fnt;
     SDL_Color fnt_clr;
@@ -39,7 +43,6 @@ Game *MakeGame();
 
 /**
  * initializes a Game: allocating memory for board, setting all values to 0, score to 0
- * and free_tiles to 16
  * @param g a pointer to a Game
  */
 void InitGame(Game *g);
@@ -109,7 +112,6 @@ int LoadGame(Game *g);
 
 /**
  * sets a number of random '0-locations' in a 4x4 matrix of ints, i.e. a 2048 board, to certain values;
- * decrements a Game's free_tiles property after each addition
  * @param g a pointer to a Game
  * @param val a value to be placed on board; must be 2 or 4
  * @param n number of '0-locations' to be set; must be 1 or 2
@@ -118,12 +120,10 @@ void SpawnTiles(Game *g, int val, int n);
 
 /**
  * executes user input for a move, with options for 'up', 'right', 'down', and 'left'; as well as for saving, quitting,
- * and both
- * @param isOn a pointer to a boolean, that can tell main() if Game must go on; set to 0 if quitting
- * @param wasMove a pointer to a pseudo-boolean, that can tell main() if last action was a move; else, no spawn
+ * both, and loading
  * @param g a pointer to a Game
  */
-void PromptMove(int *isOn, int *wasMove, Game *g);
+void PromptMove(Game *g);
 
 /**
  * accomplishes a move in a Game by sliding and fusing tiles to right
@@ -160,15 +160,14 @@ void Rotate(int **board, int n);
  * looks for two neighbouring identical values in a 4x4 matrix of ints, i.e. a 2048 board, with no 0s; if a pair is
  * found, return void, else: go to game over
  * @param g a pointer to a Game
- * @return if game over and player wants to go to menu, 1; else, 0
  */
-int CheckLose(Game *g);
+int CheckStatus(Game *g);
 
 /**
  * prints a game over screen and shows final score (win or lose)
  * @param g a pointer to a Game
  * @return if wants to go back to menu, 1; else, 0, frees memory allocated to Game, and exits program
  */
-int EndGame(Game *g, int isLose);
+int EndGame(Game *g);
 
 #endif //INC_2048_C_GAME_H

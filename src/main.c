@@ -16,8 +16,7 @@ int main(int argc, char **argv) {//not used, but important for SDL
 
     Game *g = MakeGame(); // pointer to game
 
-    int isOn = Menu(g); // boolean: is game on?
-    int wasMove = 0; // boolean: was the last action actually a move?
+    g->isOn = Menu(g);
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
 
@@ -27,10 +26,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
     SDL_Surface *counter_dis = TTF_RenderText_Solid(g->fnt, time_str, g->fnt_clr);//time counter display
     SDL_Rect pos;
 
-    while (isOn) {
+    while (g->isOn) {
         if (isFirst) {
             isFirst = 0;
-        } else if (wasMove) {
+        } else if (g->wasMove) {
             //rdm int value 'between 0+1 and 1+1' *2, so 'either 1 or 2' *2, so: 'either 2 or 4'
             rdVal = ((rand() % 2) + 1) * 2;
             if (rdVal == 4) {
@@ -45,8 +44,8 @@ int main(int argc, char **argv) {//not used, but important for SDL
 
         current_time = SDL_GetTicks();
         if (current_time - prev_time >= second) {
-            g->seconds += second;
-            sprintf(time_str, "secondes : %d", g->seconds / 1000);
+            g->seconds += second / 1000;
+            sprintf(time_str, "secondes : %d", g->seconds);
             SDL_FreeSurface(counter_dis);
             counter_dis = TTF_RenderText_Blended(g->fnt, time_str, g->fnt_clr);
             prev_time = current_time;
@@ -57,13 +56,15 @@ int main(int argc, char **argv) {//not used, but important for SDL
 
         DisplayGame(g);
 
-        if (g->free_tiles == 0 && CheckLose(g) == 1) {
-            goto start_game;
+        g->status = CheckStatus(g);
+        if (g->status != 0) {
+            if (EndGame(g)) {
+                goto start_game;
+            }
         }
 
-        PromptMove(&isOn, &wasMove, g);
+        PromptMove(g);
     }
-
     FreeGame(g);
     return EXIT_SUCCESS;
 }
