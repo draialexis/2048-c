@@ -18,29 +18,28 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
-    SDL_Surface *screen = NULL;
+    Game *g = MakeGame(); // pointer to game
 
-    screen = SDL_SetVideoMode(WID, HEI, BPP, SDL_HWSURFACE);//DOUBLEBUF?
-
-    if (screen == NULL) {
+    SDL_Surface *screen_ = NULL;
+    screen_ = SDL_SetVideoMode(WID, HEI, BPP, SDL_HWSURFACE);
+    if (screen_ == NULL) {
         fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-    SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 200, 200, 200));
-
+    SDL_FillRect(screen_, NULL, SDL_MapRGB(screen_->format, 230, 230, 230));
     SDL_WM_SetCaption("2048", NULL);
-
-    Game *g = MakeGame(); // pointer to game
+    g->screen = screen_;
 
     char *fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
-    TTF_Font *fnt = NULL;
-    fnt = TTF_OpenFont(fntPath, 24);
-    if (fnt == NULL) {
+    TTF_Font *fnt_ = NULL;
+    fnt_ = TTF_OpenFont(fntPath, 24);
+    if (fnt_ == NULL) {
         fprintf(stderr, "\nUnable to load TTF font: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
+    g->fnt = fnt_;
 
-    int isOn = Menu(g, screen, fnt); // boolean: is game on?
+    int isOn = Menu(g); // boolean: is game on?
     int wasMove = 0; // boolean: was the last action actually a move?
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
@@ -48,25 +47,25 @@ int main(int argc, char **argv) {
     SDL_Color charcoal = {33, 33, 33};
     int current_time = 0, prev_time = 0, second = 1000;//counter_dis, current time
     char time_str[32] = "";
-    SDL_Surface *counter_dis = TTF_RenderText_Solid(fnt, time_str, charcoal);//time counter display
+    SDL_Surface *counter_dis = TTF_RenderText_Solid(g->fnt, time_str, charcoal);//time counter display
     SDL_Rect pos;
 
     while (isOn) {
-        SDL_FreeSurface(screen);
-        SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 230, 230, 230));
+        SDL_FreeSurface(g->screen);
+        SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230));
 
         current_time = (int) SDL_GetTicks();
         if (current_time - prev_time >= second) {
             g->seconds += second;
             sprintf(time_str, "secondes : %d", g->seconds / 1000);
             SDL_FreeSurface(counter_dis);
-            counter_dis = TTF_RenderText_Blended(fnt, time_str, charcoal);
+            counter_dis = TTF_RenderText_Blended(g->fnt, time_str, charcoal);
             prev_time = current_time;
         }
         pos.x = PAD;
         pos.y = PAD + 60;
-        SDL_BlitSurface(counter_dis, NULL, screen, &pos);
-        SDL_Flip(screen);
+        SDL_BlitSurface(counter_dis, NULL, g->screen, &pos);
+        SDL_Flip(g->screen);
 
 
         if (isFirst) {
@@ -78,19 +77,15 @@ int main(int argc, char **argv) {
             SpawnTiles(g, rdVal, 1);
         }
 
-        DisplayGame(g, screen, fnt);
+        DisplayGame(g);
 
         if (g->free_tiles == 0) {
             CheckLose(g);
         }
 
-        PromptMove(&isOn, &wasMove, g, screen, fnt);
+        PromptMove(&isOn, &wasMove, g);
     }
 
-    TTF_CloseFont(fnt);
-    SDL_FreeSurface(screen);
-    TTF_Quit();
-    SDL_Quit();
-
+    FreeGame(g);
     return EXIT_SUCCESS;
 }

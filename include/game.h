@@ -21,6 +21,8 @@ typedef struct Game_ {
     int score;
     int free_tiles;
     int seconds;
+    SDL_Surface *screen;
+    TTF_Font *fnt;
 } Game;
 
 /**
@@ -39,10 +41,8 @@ void InitGame(Game *g);
 /**
  * displays a Game to console, showing state of board and score
  * @param g a pointer to a Game
- * @param screen a pointer to a SDL_Surface
- * @param fnt a pointer to a TTF_Font
  */
-void DisplayGame(Game *g, SDL_Surface *screen, TTF_Font *fnt);
+void DisplayGame(Game *g);
 
 /**
  * frees memory allocated to a Game
@@ -63,14 +63,6 @@ int **MakeBoard();
 void InitBoard(int **board);
 
 /**
- * displays a 4x4 matrix of ints, i.e. a 2048 board, to console, with 4 leading 0s and with '#'s on empty tiles
- * @param board a pointer to a board
- * @param screen a pointer to a SDL_Surface
- * @param fnt a pointer to a TTF_Font
- */
-void DisplayBoard(int **board, SDL_Surface *screen, TTF_Font *fnt);
-
-/**
  * frees memory allocated to a 4x4 matrix of ints, i.e. a 2048 board
  * @param board a pointer to a board
  */
@@ -86,18 +78,15 @@ int **CopyBoard(int **board);
 /**
  * prompts user for an input, with options to start a new Game, load a Game, or exit program
  * @param g a pointer to a Game
- * @param screen a pointer to a SDL_Surface
- * @param fnt a pointer to a TTF_Font
  * @return if exit: 0; else: 1
  */
-int Menu(Game *g, SDL_Surface *screen, TTF_Font *fnt);
+int Menu(Game *g);
 
 /**
  * starts a new Game, setting all to default initial values, and spawning two 2s at random spots on board
  * @param g a pointer to a Game
- * @param g a pointer to a SDL_Surface
  */
-void NewGame(Game *g, SDL_Surface *screen);
+void NewGame(Game *g);
 
 /**
  * saves a Game to a unique .txt save file in program's root folder, with a default name: 'save_2048.txt'
@@ -127,9 +116,8 @@ void SpawnTiles(Game *g, int val, int n);
  * @param isOn a pointer to a boolean, that can tell main() if Game must go on; set to 0 if quitting
  * @param wasMove a pointer to a pseudo-boolean, that can tell main() if last action was a move; else, no spawn
  * @param g a pointer to a Game
- * @param fnt a pointer to a TTF_Font
  */
-void PromptMove(int *isOn, int *wasMove, Game *g, SDL_Surface *screen, TTF_Font *fnt);
+void PromptMove(int *isOn, int *wasMove, Game *g);
 
 /**
  * accomplishes a move in a Game by sliding and fusing tiles to right
