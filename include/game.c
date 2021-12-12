@@ -32,13 +32,13 @@ void DisplayGame(Game *g) {
     char *prompt_str = "(s)auver | (c)harger";
 
     pos.x = PAD;
-    pos.y = PAD;
+    pos.y = PAD;//1st line
     SDL_Surface *prompt = NULL;
     prompt = TTF_RenderText_Blended(g->fnt, prompt_str, charcoal);
     SDL_BlitSurface(prompt, NULL, g->screen, &pos);
 
     pos.x = PAD;
-    pos.y = PAD + 30;
+    pos.y = PAD + H_T; //2nd line
     SDL_Surface *score_dis = NULL;
     char score_str[32];
     sprintf(score_str, "score : %d", g->score);

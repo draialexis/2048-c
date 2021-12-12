@@ -7,6 +7,7 @@
 #define W_B 480 //width of board
 #define HDR (HEI - WID) //height of header for score and timer
 #define PAD 10 //size of padding
+#define H_T 30 //(approx) height of text
 #define TIL ((WID - (PAD * 5)) / 4) //length of a tile's side
 #define BPP 32 //bits per pixel
 

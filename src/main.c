@@ -45,29 +45,13 @@ int main(int argc, char **argv) {
     int isFirst = 1; // boolean: is it round 1?
 
     SDL_Color charcoal = {33, 33, 33};
-    int current_time = 0, prev_time = 0, second = 1000;//counter_dis, current time
+    Uint32 current_time = 0, prev_time = 0;
+    int second = 1000;
     char time_str[32] = "";
     SDL_Surface *counter_dis = TTF_RenderText_Solid(g->fnt, time_str, charcoal);//time counter display
     SDL_Rect pos;
 
     while (isOn) {
-        SDL_FreeSurface(g->screen);
-        SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230));
-
-        current_time = (int) SDL_GetTicks();
-        if (current_time - prev_time >= second) {
-            g->seconds += second;
-            sprintf(time_str, "secondes : %d", g->seconds / 1000);
-            SDL_FreeSurface(counter_dis);
-            counter_dis = TTF_RenderText_Blended(g->fnt, time_str, charcoal);
-            prev_time = current_time;
-        }
-        pos.x = PAD;
-        pos.y = PAD + 60;
-        SDL_BlitSurface(counter_dis, NULL, g->screen, &pos);
-        SDL_Flip(g->screen);
-
-
         if (isFirst) {
             isFirst = 0;
         } else if (wasMove) {
@@ -76,6 +60,21 @@ int main(int argc, char **argv) {
             //spawn a tile, of val 2 or 4, somewhere on board
             SpawnTiles(g, rdVal, 1);
         }
+
+        SDL_FreeSurface(g->screen);
+        SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230));
+
+        current_time = SDL_GetTicks();
+        if (current_time - prev_time >= second) {
+            g->seconds += second;
+            sprintf(time_str, "secondes : %d", g->seconds / 1000);
+            SDL_FreeSurface(counter_dis);
+            counter_dis = TTF_RenderText_Blended(g->fnt, time_str, charcoal);
+            prev_time = current_time;
+        }
+        pos.x = PAD;
+        pos.y = PAD + (H_T * 2);//3rd line
+        SDL_BlitSurface(counter_dis, NULL, g->screen, &pos);
 
         DisplayGame(g);
 
