@@ -1,8 +1,12 @@
 #include "toolbox.h"
 
-void Purge() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
+int GetInput() {
+    int res = getchar();
+    int dump;
+    while ((dump = getchar()) != '\n' && dump != EOF) {
+        //do nothing
+    }
+    return res;
 }
 
 int isFOpen(FILE *f, char *f_name) {

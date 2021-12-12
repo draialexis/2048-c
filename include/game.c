@@ -24,8 +24,13 @@ void DisplayGame(Game *g) {
         FAIL_OUT
     }
     printf("score: %d\n", g->score);
-//    printf("free tiles: %d\n", g->free_tiles);
-    DisplayBoard(g->board);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (g->board[i][j] != 0) { printf("%04d ", g->board[i][j]); }
+            else { printf("#### "); }
+        }
+        printf("\n");
+    }
 }
 
 void FreeGame(Game *g) {
@@ -39,7 +44,6 @@ int **MakeBoard() {
     int **board = NULL;
     board = malloc(4 * sizeof(int *));
     if (board == NULL) { MALLOC_FAIL }
-
     for (int i = 0; i < 4; i++) {
         board[i] = NULL;
         board[i] = malloc(4 * (sizeof(int)));
@@ -48,7 +52,6 @@ int **MakeBoard() {
             MALLOC_FAIL
         }
     }
-
     InitBoard(board);
     return board;
 }
@@ -62,20 +65,6 @@ void InitBoard(int **board) {
         for (int j = 0; j < 4; j++) {
             board[i][j] = 0;
         }
-    }
-}
-
-void DisplayBoard(int **board) {
-    if (board == NULL) {
-        printf("could not find board to display\n");
-        FAIL_OUT
-    }
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (board[i][j] != 0) { printf("%04d ", board[i][j]); }
-            else { printf("#### "); }
-        }
-        printf("\n");
     }
 }
 
@@ -113,7 +102,7 @@ int Menu(Game *g) {
            "quitter:......... q\n"
            ">");
 
-    int input = getchar();
+    int input = GetInput();
     Purge();
 
     switch (input) {
@@ -226,8 +215,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
     }
     printf("(h)aut | (d)roite | (g)auche | (b)as || (q)uitter | (s)auvegarder | (c)harger\n");
 
-    int input = getchar();
-    Purge();
+    int input = GetInput();
     int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
     *wasMove = 0;
     int input_bis;
@@ -260,8 +248,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
                    "non:... n\n"
                    ">");
 
-            input_bis = getchar();
-            Purge();
+            input_bis = GetInput();
 
             if (input_bis != 'n') { SaveGame(g); }
             isSuccess = 1;
@@ -272,8 +259,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
                    "oui:... o\n"
                    "non:... n\n"
                    ">");
-            input_bis = getchar();
-            Purge();
+            input_bis = GetInput();
             if (input_bis == 'o') {
                 SaveGame(g);
                 isSuccess = 1;
@@ -285,8 +271,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
                    "non:... n\n"
                    ">");
 
-            input_bis = getchar();
-            Purge();
+            input_bis = GetInput();
             if (input_bis == 'o') {
                 LoadGame(g);
                 isSuccess = 1;

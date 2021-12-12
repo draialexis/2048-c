@@ -11,9 +11,10 @@
 #define MALLOC_FAIL printf("!_malloc failed_!\n"); FAIL_OUT
 
 /**
- * empties stdin from all superfluous characters, including final \\n
+ * gets input from console, in the form of one character, and dumps any other characters to clean up stdin
+ * @return one character as an int
  */
-void Purge();
+int GetInput();
 
 /**
  * checks if a file was open successfully; exits with error if not
