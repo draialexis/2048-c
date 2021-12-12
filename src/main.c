@@ -6,10 +6,12 @@ int main(int argc, char **argv) {//not used, but important for SDL
     srand(time(NULL));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        DEBUG
         fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-    if (TTF_Init() == -1) {
+    if (TTF_Init() != 0) {
+        DEBUG
         fprintf(stderr, "\nUnable to initialize TTF: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
@@ -22,8 +24,14 @@ int main(int argc, char **argv) {//not used, but important for SDL
 
     Uint32 current_time = 0, prev_time = 0;
     int second = 1000;
-    char time_str[32] = "";
-    SDL_Surface *counter_dis = TTF_RenderText_Solid(g->fnt, time_str, g->fnt_clr);//time counter display
+    char time_str[32] = "secondes : ";
+    SDL_Surface *counter_dis = NULL;
+    counter_dis = TTF_RenderText_Solid(g->fnt, time_str, g->fnt_clr);//time counter display
+    if (counter_dis == NULL) {
+        DEBUG
+        fprintf(stderr, "\nTTF RenderText error: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
     SDL_Rect pos;
 
     while (g->isOn) {
@@ -40,7 +48,11 @@ int main(int argc, char **argv) {//not used, but important for SDL
         }
 
         SDL_FreeSurface(g->screen);
-        SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230));
+        if (SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230)) != 0) {
+            DEBUG
+            fprintf(stderr, "\nUnable to initialize screen: %s\n", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
 
         current_time = SDL_GetTicks();
         if (current_time - prev_time >= second) {
@@ -48,11 +60,20 @@ int main(int argc, char **argv) {//not used, but important for SDL
             sprintf(time_str, "secondes : %d", g->seconds);
             SDL_FreeSurface(counter_dis);
             counter_dis = TTF_RenderText_Blended(g->fnt, time_str, g->fnt_clr);
+            if (counter_dis == NULL) {
+                DEBUG
+                fprintf(stderr, "\nTTF RenderText error: %s\n", TTF_GetError());
+                exit(EXIT_FAILURE);
+            }
             prev_time = current_time;
         }
         pos.x = PAD;
         pos.y = PAD + (H_T * 2);//3rd line
-        SDL_BlitSurface(counter_dis, NULL, g->screen, &pos);
+        if (SDL_BlitSurface(counter_dis, NULL, g->screen, &pos) != 0) {
+            DEBUG
+            fprintf(stderr, "\nUnable to initialize counter: %s\n", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
 
         DisplayGame(g);
 
