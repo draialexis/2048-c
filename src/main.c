@@ -57,6 +57,9 @@ int main(int argc, char **argv) {
         } else if (wasMove) {
             //rdm int value 'between 0+1 and 1+1' *2, so 'either 1 or 2' *2, so: 'either 2 or 4'
             rdVal = ((rand() % 2) + 1) * 2;
+            if (rdVal == 4) {
+                rdVal = ((rand() % 2) + 1) * 2;//If it's a 4, we flip the coin again --> 25% chance
+            }
             //spawn a tile, of val 2 or 4, somewhere on board
             SpawnTiles(g, rdVal, 1);
         }
