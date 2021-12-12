@@ -306,14 +306,12 @@ int Menu(Game *g) {
                             printf("sauvegarde introuvable ou impossible a lire\n");
                             return Menu(g);
                         }
-                        break;
                     default:
                         SDL_FreeSurface(menu);
                         return Menu(g);
                 }
         }
     }
-    return 0; // cannot be reached, in practice...
 }
 
 void NewGame(Game *g) {
@@ -407,7 +405,6 @@ void PromptMove(Game *g) {
         printf("could not find game to prompt move, or other invalid param\n");
         FAIL_OUT
     }
-    int isSuccess = 0; //boolean: was input valid and/or was move fruitful?
     g->wasMove = 0;
     SDL_Event evt;
     if (!SDL_WaitEvent(&evt)) {
@@ -426,33 +423,27 @@ void PromptMove(Game *g) {
                     break;
                 case SDLK_UP://rotate 90°, slide to right, rotate another 270°
                     Rotate(g->board, 1);
-                    isSuccess = Move(g);
+                    g->wasMove = Move(g);
                     Rotate(g->board, 3);
-                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case SDLK_RIGHT://slide to right
-                    isSuccess = Move(g);
-                    if (isSuccess) { g->wasMove = 1; }
+                    g->wasMove = Move(g);
                     break;
                 case SDLK_DOWN://rotate 270°, slide to right, rotate another 90°
                     Rotate(g->board, 3);
-                    isSuccess = Move(g);
+                    g->wasMove = Move(g);
                     Rotate(g->board, 1);
-                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case SDLK_LEFT://rotate 180°, slide to right, rotate another 180°
                     Rotate(g->board, 2);
-                    isSuccess = Move(g);
+                    g->wasMove = Move(g);
                     Rotate(g->board, 2);
-                    if (isSuccess) { g->wasMove = 1; }
                     break;
                 case 's':
                     SaveGame(g);
-                    isSuccess = 1;
                     break;
                 case 'c':
                     LoadGame(g);
-                    isSuccess = 1;
                     break;
                 default:
                     break;
