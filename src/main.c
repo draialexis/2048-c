@@ -1,12 +1,8 @@
-#include <SDL.h>
-#include <SDL_ttf.h>
-#include "../include/SDL.h"//<<<<TODO remove #include before shipping
-#include "../include/SDL_ttf.h"//<<<<TODO remove HEADER FILE before shipping
 #include "../include/toolbox.h"
 #include "../include/game.h"
 
 int main(int argc, char **argv) {//not used, but important for SDL
-
+    start_game:;
     srand(time(NULL));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -61,8 +57,8 @@ int main(int argc, char **argv) {//not used, but important for SDL
 
         DisplayGame(g);
 
-        if (g->free_tiles == 0) {
-            CheckLose(g);
+        if (g->free_tiles == 0 && CheckLose(g) == 1) {
+            goto start_game;
         }
 
         PromptMove(&isOn, &wasMove, g);

@@ -9,6 +9,8 @@
 #define TIL ((WID - (PAD * 5)) / 4) //length of a tile's side
 #define BPP 32 //bits per pixel
 
+#include "toolbox.h"
+
 /**
  * a struct to represent a game of 2048
  * @properties board: a pointer to a 4x4 matrix of ints, i.e. a 2048 board
@@ -158,14 +160,16 @@ void Rotate(int **board, int n);
  * looks for two neighbouring identical values in a 4x4 matrix of ints, i.e. a 2048 board, with no 0s; if a pair is
  * found, return void, else: go to game over
  * @param g a pointer to a Game
+ * @return if game over and player wants to go to menu, 1; else, 0
  */
-void CheckLose(Game *g);
+int CheckLose(Game *g);
 
 /**
  * prints a game over screen, frees memory allocated to Game, and exits program
  * @param g a pointer to a Game
+ * @return if wants to go to menu, 1; else, 0
  */
-void YouLose(Game *g);
+int YouLose(Game *g);
 
 /**
  * prints a win screen, frees memory allocated to Game, and exits program

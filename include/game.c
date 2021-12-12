@@ -1,7 +1,4 @@
-#include <SDL.h>// TODO remove later?
-#include <SDL_ttf.h>// TODO remove later?
 #include "game.h"
-#include "toolbox.h"
 
 Game *MakeGame() {
     Game *res = NULL;
@@ -226,9 +223,11 @@ int Menu(Game *g) {
     while (1) {
         SDL_WaitEvent(&evt);
         switch (evt.type) {
-            case SDL_QUIT:
+            case SDL_QUIT:// we can't call freegame because some components haven't been malloced yet
+                TTF_CloseFont(g->fnt);
                 SDL_FreeSurface(menu);
-                return 0;
+                SDL_FreeSurface(g->screen);
+                exit(EXIT_SUCCESS);
             case SDL_KEYDOWN:
                 switch (evt.key.keysym.sym) {
                     case 'n':
@@ -468,7 +467,7 @@ void Rotate(int **board, int n) {
     }
 }
 
-void CheckLose(Game *g) {
+int CheckLose(Game *g) {
     if (g == NULL) {
         printf("could not find game to check lose\n");
         FAIL_OUT
@@ -476,28 +475,80 @@ void CheckLose(Game *g) {
     if (g->free_tiles > 0) {
         printf("Uh oh -- there are free tiles on board, we shouldn't be checking for game over\n");
         DEBUG
-        return;
+        return 0;
     }
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (g->board[i][j] == g->board[i][j + 1] ||
                 g->board[i][j] == g->board[i + 1][j]) {
-                return;
+                return 0;
                 //a move is possible: we exit before reaching YouLose(), player can figure it out
             }
         }
     }
-    YouLose(g);
+    return YouLose(g);
 }
 
-void YouLose(Game *g) {
+int YouLose(Game *g) {
     if (g == NULL) {
         printf("could not find game to lose\n");
         FAIL_OUT
     }
-    printf("=====Game Over=====\nvotre score final: %d\n", g->score);
-    FreeGame(g);
-    exit(EXIT_SUCCESS);
+    SDL_Rect *hdr = NULL;
+    hdr = (SDL_Rect *) malloc(sizeof(SDL_Rect)); // a header that will contain game over info
+    if (hdr == NULL) {
+        DEBUG
+        MALLOC_FAIL
+    }
+    hdr->x = 0;
+    hdr->y = 0;
+    hdr->w = WID;
+    hdr->h = HDR;
+    SDL_FillRect(g->screen, hdr, SDL_MapRGBA(g->screen->format, 150, 150, 150, 200));
+
+    SDL_Rect pos;
+
+    pos.x = PAD;
+    pos.y = PAD;
+    char score_str[64] = "";
+    sprintf(score_str, "score final : %d", g->score);
+    SDL_Surface *score_dis = TTF_RenderText_Blended(g->fnt, score_str, g->fnt_clr);
+    SDL_BlitSurface(score_dis, NULL, g->screen, &pos);
+
+    pos.y += H_T;
+    char *gameover = "Game Over... retour au (m)enu ?";
+    SDL_Surface *gameover_dis = TTF_RenderText_Blended(g->fnt, gameover, g->fnt_clr);
+    SDL_BlitSurface(gameover_dis, NULL, g->screen, &pos);
+
+    SDL_Flip(g->screen);
+
+    SDL_Event evt;
+    SDL_WaitEvent(&evt);
+    switch (evt.type) {
+        case SDL_QUIT:
+            FreeGame(g);
+            exit(EXIT_SUCCESS);
+        case SDL_KEYDOWN:
+            switch (evt.key.keysym.sym) {
+                case 'm':
+                    SDL_FreeSurface(score_dis);
+                    SDL_FreeSurface(gameover_dis);
+                    free(hdr);
+                    return 1;
+                case SDLK_ESCAPE:
+                    SDL_FreeSurface(score_dis);
+                    SDL_FreeSurface(gameover_dis);
+                    free(hdr);
+                    FreeGame(g);
+                    exit(EXIT_SUCCESS);
+                default:
+                    SDL_FreeSurface(score_dis);
+                    SDL_FreeSurface(gameover_dis);
+                    free(hdr);
+                    break;
+            }
+    }
+    return YouLose(g);
 }
 
 void YouWin(Game *g) {

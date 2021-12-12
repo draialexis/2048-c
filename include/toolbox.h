@@ -1,6 +1,8 @@
 #ifndef INC_2048_C_TOOLBOX_H
 #define INC_2048_C_TOOLBOX_H
 
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -16,6 +18,5 @@
  * @return if file was able to be opened, 1; else, 0
  */
 int isFOpen(FILE *f, char *f_name);
-
 
 #endif //INC_2048_C_TOOLBOX_H
