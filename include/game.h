@@ -3,8 +3,6 @@
 
 #define HEI 640 //height of screen
 #define WID 480 //width of screen
-#define H_B 480 //height of board
-#define W_B 480 //width of board
 #define HDR (HEI - WID) //height of header for score and timer
 #define PAD 10 //size of padding
 #define H_T 30 //(approx) height of text
@@ -13,9 +11,13 @@
 
 /**
  * a struct to represent a game of 2048
- * @property board: a pointer to a 4x4 matrix of ints
- * @property score: an int for player's score
- * @property free_tiles: an int for remaining number of free tiles (val=0) on board
+ * @properties board: a pointer to a 4x4 matrix of ints, i.e. a 2048 board
+ * @properties score: an int for player score
+ * @properties free_tiles: an int for remaining number of free tiles on board
+ * @properties seconds: an int number of seconds passed since start of game
+ * @properties screen: a pointer to an SDL_Surface
+ * @properties fnt: a pointer to a TTF_Font
+ * @properties fnt_clr: a pointer to an SDL_Color
  */
 typedef struct Game_ {
     int **board;
@@ -24,6 +26,7 @@ typedef struct Game_ {
     int seconds;
     SDL_Surface *screen;
     TTF_Font *fnt;
+    SDL_Color fnt_clr;
 } Game;
 
 /**

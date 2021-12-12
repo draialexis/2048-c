@@ -26,7 +26,6 @@ void DisplayGame(Game *g) {
         printf("could not find game to display\n");
         FAIL_OUT
     }
-    SDL_Color charcoal = {33, 33, 33};
     SDL_Rect pos;
 
     char *prompt_str = "(s)auver | (c)harger";
@@ -34,7 +33,7 @@ void DisplayGame(Game *g) {
     pos.x = PAD;
     pos.y = PAD;//1st line
     SDL_Surface *prompt = NULL;
-    prompt = TTF_RenderText_Blended(g->fnt, prompt_str, charcoal);
+    prompt = TTF_RenderText_Blended(g->fnt, prompt_str, g->fnt_clr);
     SDL_BlitSurface(prompt, NULL, g->screen, &pos);
 
     pos.x = PAD;
@@ -42,7 +41,7 @@ void DisplayGame(Game *g) {
     SDL_Surface *score_dis = NULL;
     char score_str[32];
     sprintf(score_str, "score : %d", g->score);
-    score_dis = TTF_RenderText_Blended(g->fnt, score_str, charcoal);
+    score_dis = TTF_RenderText_Blended(g->fnt, score_str, g->fnt_clr);
     SDL_BlitSurface(score_dis, NULL, g->screen, &pos);
 
     pos.x = 0;
@@ -191,13 +190,34 @@ int Menu(Game *g) {
         printf("could not find game to use for menu\n");
         FAIL_OUT
     }
-    SDL_Color charcoal = {33, 33, 33};
+
+    //the screen first appears in the menu before we start a game (new, loaded...)
+    //so we initialize the screen and font here
+    SDL_Surface *screen_ = NULL;
+    screen_ = SDL_SetVideoMode(WID, HEI, BPP, SDL_HWSURFACE);
+    if (screen_ == NULL) {
+        fprintf(stderr, "\nVideoMode error: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+    SDL_FillRect(screen_, NULL, SDL_MapRGB(screen_->format, 230, 230, 230));
+    SDL_WM_SetCaption("2048", NULL);
+    g->screen = screen_;
+
+    char *fntPath = "/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf";
+    TTF_Font *fnt_ = NULL;
+    fnt_ = TTF_OpenFont(fntPath, 24);
+    if (fnt_ == NULL) {
+        fprintf(stderr, "\nUnable to load TTF font: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+    g->fnt = fnt_;
+    g->fnt_clr = (SDL_Color) {33, 33, 33};
 
     SDL_Rect pos;
     pos.x = PAD;
     pos.y = PAD;
     SDL_Surface *menu = NULL;
-    menu = TTF_RenderText_Blended(g->fnt, "(n)ouveau | (c)harger", charcoal);
+    menu = TTF_RenderText_Blended(g->fnt, "(n)ouveau | (c)harger", g->fnt_clr);
     SDL_BlitSurface(menu, NULL, g->screen, &pos);
 
     SDL_Flip(g->screen);
