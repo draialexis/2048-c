@@ -165,16 +165,10 @@ void Rotate(int **board, int n);
 int CheckLose(Game *g);
 
 /**
- * prints a game over screen, frees memory allocated to Game, and exits program
+ * prints a game over screen and shows final score (win or lose)
  * @param g a pointer to a Game
- * @return if wants to go to menu, 1; else, 0
+ * @return if wants to go back to menu, 1; else, 0, frees memory allocated to Game, and exits program
  */
-int YouLose(Game *g);
-
-/**
- * prints a win screen, frees memory allocated to Game, and exits program
- * @param g a pointer to a Game
- */
-void YouWin(Game *g);
+int EndGame(Game *g, int isLose);
 
 #endif //INC_2048_C_GAME_H

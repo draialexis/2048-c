@@ -438,7 +438,7 @@ void Fuse(Game *g, int *hasFused) {
         for (int j = 2; j >= 0; j--) {
             if (g->board[i][j] != 0 && g->board[i][j + 1] == g->board[i][j]) {
                 int newVal = g->board[i][j + 1] << 1;
-                if (newVal == 2048) { YouWin(g); }
+                if (newVal == 2048) { EndGame(g, 0); }
                 g->score += newVal;
                 g->board[i][j + 1] = newVal;
                 g->board[i][j] = 0;
@@ -482,16 +482,16 @@ int CheckLose(Game *g) {
             if (g->board[i][j] == g->board[i][j + 1] ||
                 g->board[i][j] == g->board[i + 1][j]) {
                 return 0;
-                //a move is possible: we exit before reaching YouLose(), player can figure it out
+                //a move is possible: we exit before reaching EndGame(), player can figure it out
             }
         }
     }
-    return YouLose(g);
+    return EndGame(g, 1);
 }
 
-int YouLose(Game *g) {
+int EndGame(Game *g, int isLose) {
     if (g == NULL) {
-        printf("could not find game to lose\n");
+        printf("could not find game to end\n");
         FAIL_OUT
     }
     SDL_Rect *hdr = NULL;
@@ -516,7 +516,12 @@ int YouLose(Game *g) {
     SDL_BlitSurface(score_dis, NULL, g->screen, &pos);
 
     pos.y += H_T;
-    char *gameover = "Game Over... retour au (m)enu ?";
+    char gameover[64];
+    if (isLose) {
+        sprintf(gameover, "Game Over... retour au (m)enu ?");
+    } else {
+        sprintf(gameover, "2 0 4 8 !... retour au (m)enu ?");
+    }
     SDL_Surface *gameover_dis = TTF_RenderText_Blended(g->fnt, gameover, g->fnt_clr);
     SDL_BlitSurface(gameover_dis, NULL, g->screen, &pos);
 
@@ -548,15 +553,5 @@ int YouLose(Game *g) {
                     break;
             }
     }
-    return YouLose(g);
-}
-
-void YouWin(Game *g) {
-    if (g == NULL) {
-        printf("could not find game to win\n");
-        FAIL_OUT
-    }
-    printf("Felicitations! \\_2_0_4_8_/\nvotre score final: %d\n", g->score);
-    FreeGame(g);
-    exit(EXIT_SUCCESS);
+    return EndGame(g, isLose);
 }
