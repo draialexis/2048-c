@@ -1,11 +1,6 @@
 #ifndef INC_2048_C_GAME_H
 #define INC_2048_C_GAME_H
 
-#define H 512 //height of board
-#define W H //width of board
-#define L (W / 4) //length of a tile's side
-#define BPP 32 //bits per pixel
-
 /**
  * a struct to represent a game of 2048
  * @property board: a pointer to a 4x4 matrix of ints
@@ -58,12 +53,6 @@ int **MakeBoard();
  * @param board a pointer to a board
  */
 void InitBoard(int **board);
-
-/**
- * displays a 4x4 matrix of ints, i.e. a 2048 board, to console, with 4 leading 0s and with '#'s on empty tiles
- * @param board a pointer to a board
- */
-void DisplayBoard(int **board);
 
 /**
  * frees memory allocated to a 4x4 matrix of ints, i.e. a 2048 board

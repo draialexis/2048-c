@@ -103,7 +103,6 @@ int Menu(Game *g) {
            ">");
 
     int input = GetInput();
-    Purge();
 
     switch (input) {
         case 'n':
@@ -195,12 +194,11 @@ void SpawnTiles(Game *g, int val, int n) {
         printf("could not find game to spawn tiles, or other invalid param\n");
         FAIL_OUT
     }
-    int spawned = 0; // number of tiles spawned
+    int spawned = 0; // number of tiles successfully spawned
     while (spawned < n) {
         int col = rand() % 4;
         int row = rand() % 4;
         if (g->board[row][col] == 0) {
-//            printf("[%d][%d] = %d\n", row, col, val);
             g->board[row][col] = val;
             g->free_tiles -= 1;
             spawned++;
@@ -220,23 +218,23 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
     *wasMove = 0;
     int input_bis;
     switch (input) {
-        case 'h': //UP:     rotate 90°, slide to right, rotate another 270°
+        case 'h': //UP: rotate 90°, slide to right, rotate another 270°
             Rotate(g->board, 1);
             isSuccess = Move(g);
             Rotate(g->board, 3);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'd': //RIGHT:  slide to right
+        case 'd': //RIGHT: slide to right
             isSuccess = Move(g);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'b': //DOWN:   rotate 270°, slide to right, rotate another 90°
+        case 'b': //DOWN: rotate 270°, slide to right, rotate another 90°
             Rotate(g->board, 3);
             isSuccess = Move(g);
             Rotate(g->board, 1);
             if (isSuccess) { *wasMove = 1; }
             break;
-        case 'g': //LEFT:   rotate 180°, slide to right, rotate another 180°
+        case 'g': //LEFT: rotate 180°, slide to right, rotate another 180°
             Rotate(g->board, 2);
             isSuccess = Move(g);
             Rotate(g->board, 2);
@@ -249,7 +247,6 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
                    ">");
 
             input_bis = GetInput();
-
             if (input_bis != 'n') { SaveGame(g); }
             isSuccess = 1;
             *isOn = 0;
