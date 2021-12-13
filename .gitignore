@@ -1,8 +1,6 @@
 *.o
-CMakeLists.txt
-/cmake-build-debug
 /.idea
 bin/prog
 src/main.o
-include/game.o
-include/toolbox.o
+src/game.o
+src/toolbox.o
