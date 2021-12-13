@@ -1,4 +1,4 @@
-#include "toolbox.h"
+#include "../include/toolbox.h"
 
 int isFOpen(FILE *f, char *f_name) {
     if (f == NULL) {
