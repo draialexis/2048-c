@@ -14,6 +14,6 @@ bin/prog
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc -c -Wall `sdl-config --cflags` include/toolbox.c -o include/toolbox.o
 gcc -c -Wall `sdl-config --cflags` include/game.c -o include/game.o
-gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -o bin/prog
+gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -lSDL_ttf  -o bin/prog
 bin/prog
 ```
