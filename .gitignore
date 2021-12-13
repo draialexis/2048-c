@@ -1,6 +1,4 @@
 *.o
 /.idea
 bin/prog
-src/main.o
-src/game.o
-src/toolbox.o
+bin/console
