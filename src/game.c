@@ -15,7 +15,7 @@ void InitGame(Game *g) {
     g->board = MakeBoard();
     g->score = 0;
     g->free_tiles = 16;
-    g->millisecs = 0;
+    g->msecs = 0;
     g->wasMove = 0;
     g->status = 0;
     SpawnTiles(g, 2, 2);
@@ -45,7 +45,7 @@ void DisplayGame(Game *g) {
 
     pos.y += H_T;//3rd line
     char time_str[32];
-    sprintf(time_str, "secondes : %d", (int) g->millisecs / 1000);
+    sprintf(time_str, "secondes : %d", (int) g->msecs / 1000);
     SDL_Surface *time_dis = MyRenderText(g->fnt, time_str, g->fnt_clr);
     MyBlit(time_dis, NULL, g->screen, &pos);
 
@@ -285,7 +285,7 @@ void SaveGame(Game *g) {
         }
         fprintf(fp, "%d ", g->score);
         fprintf(fp, "%d ", g->free_tiles);
-        fprintf(fp, "%d ", g->millisecs);
+        fprintf(fp, "%d ", g->msecs);
         fprintf(fp, "%d ", g->wasMove);
         fclose(fp);
     } else {
@@ -316,7 +316,7 @@ int LoadGame(Game *g) {
         fscanf(fp, "%d ", &tmp);
         g->free_tiles = tmp;
         fscanf(fp, "%d ", &tmp);
-        g->millisecs = tmp;
+        g->msecs = tmp;
         fscanf(fp, "%d ", &tmp);
         g->wasMove = tmp;
         g->isOn = 1;
@@ -350,10 +350,10 @@ void PromptMove(Game *g) {
         fprintf(stderr, "could not find game to prompt move\n");
         FAIL_OUT
     }
-    g->wasMove = 0;
-    SDL_Event evt;
+    Uint32 prv_time = SDL_GetTicks();//time spent since SDL_Init()
+    g->wasMove = 0;//don't know if a move will happen yet
 
-    Uint32 prv_time = g->millisecs;//milliseconds ellapsed since last iteration
+    SDL_Event evt;
     if (SDL_PollEvent(&evt)) {
         switch (evt.type) {
             case SDL_QUIT:
@@ -392,15 +392,15 @@ void PromptMove(Game *g) {
                         InitGame(g);
                         break;
                     default:
-                        break;//TODO not a good idea
+                        break;
                 }
         }
     }
-    g->millisecs = SDL_GetTicks();//milliseconds ellapsed since SDL_Init
-    Uint32 passed = g->millisecs - prv_time;//time passed in this iteration
-    if (passed < ITV) {
-        SDL_Delay(ITV - passed);
-    }
+    Uint32 spent = SDL_GetTicks() - prv_time;//time spent in this iteration
+    if (spent < ITV) {
+        SDL_Delay(ITV - spent);
+        g->msecs += ITV;
+    } else { g->msecs += spent; }
 }
 
 int Move(Game *g) {

@@ -17,7 +17,7 @@
  * @properties board: pointer to a 4x4 matrix of ints, i.e. a 2048 board
  * @properties score: int, player score
  * @properties free_tiles: int, number of remaining 0-tiles on board
- * @properties millisecs: Uint32, time since start of game in milliseconds
+ * @properties msecs: Uint32, time since start of game in milliseconds
  * @properties isOn: "boolean", is game on?
  * @properties wasMove: "boolean", was last action actually a move?
  * @properties status: 1 for win, 2 for lose, 0 for normal
@@ -30,7 +30,7 @@ typedef struct Game_ {
     int **board;
     int score;
     int free_tiles;
-    Uint32 millisecs;
+    Uint32 msecs;
     int isOn;
     int wasMove;
     int status;

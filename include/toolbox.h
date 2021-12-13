@@ -28,32 +28,32 @@ int isFOpen(FILE *f, char *f_name);
 void MyFillRect(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color);
 
 /**
- *
- * @param fnt
- * @param txt
- * @param clr
+ * performs the tasks of TTF_RenderText_Blended(), with error checking included
+ * @param fnt a pointer to a TTF_Font
+ * @param txt a string
+ * @param clr an SDL_Color
  * @return
  */
 SDL_Surface *MyRenderText(TTF_Font *fnt, const char *txt, SDL_Color clr);
 
 /**
- *
- * @param src
- * @param srcrect
- * @param dst
- * @param pos
+ * performs the tasks of SDL_BlitSurface(), with error checking included
+ * @param src a pointer to a source SDL_Surface
+ * @param srcrect a pointer to a portion of said source
+ * @param dst a pointer to a destination SDL_Surface
+ * @param pos a pointer to a SDL_Rect containing position information
  */
 void MyBlit(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *pos);
 
 /**
- *
- * @param screen
+ * performs the tasks of SDL_Flip(), with error checking included
+ * @param screen a pointer to the SDL_Surface to refresh
  */
 void MyFlip(SDL_Surface *screen);
 
 /**
- *
- * @param evt
+ * performs the tasks of SDL_WaitEvent(), with error checking included
+ * @param evt a pointer to an SDL_Event to wait on
  */
 void MyWait(SDL_Event *evt);
 

@@ -9,6 +9,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
         fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+    //ignore any mouse events, to avoid processing one event per micro-motion...
+    SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
+    SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
+    SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
     if (TTF_Init() != 0) {
         fprintf(stderr, "\nUnable to initialize TTF: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
