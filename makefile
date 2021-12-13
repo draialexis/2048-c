@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-c -Wall `sdl-config --cflags`
-LDFLAGS=`sdl-config --libs` -lSDL_ttf #-lm #-ldl
+LDFLAGS=`sdl-config --libs` -lSDL_ttf
 SOURCES=src/main.c include/toolbox.c include/game.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=bin/prog
