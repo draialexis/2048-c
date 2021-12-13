@@ -33,7 +33,7 @@ void DisplayGame(Game *g) {
     SDL_Rect pos;
 
     pos.x = PAD, pos.y = PAD;//1st line
-    char *prompt_str = "(s)auver | (c)harger";
+    char *prompt_str = "(s)auver | (c)harger | (n)ouveau";
     SDL_Surface *prompt_dis = MyRenderText(g->fnt, prompt_str, g->fnt_clr);
     MyBlit(prompt_dis, NULL, g->screen, &pos);
 
