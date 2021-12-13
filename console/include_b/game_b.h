@@ -23,28 +23,24 @@ Game *MakeGame();
  * initializes a Game: allocating memory for board, setting all values to 0, score to 0
  * and free_tiles to 16
  * @param g a pointer to a Game
- * @calls MakeBoard()
  */
 void InitGame(Game *g);
 
 /**
  * displays a Game to console, showing state of board and score
  * @param g a pointer to a Game
- * @calls DisplayBoard()
  */
 void DisplayGame(Game *g);
 
 /**
  * frees memory allocated to a Game
  * @param g a pointer to a Game
- * @calls FreeBoard()
  */
 void FreeGame(Game *g);
 
 /**
  * allocates memory for a 4x4 matrix of ints, i.e. a 2048 board, then setting all values to 0
  * @return a pointer to board
- * @calls InitBoard()
  */
 int **MakeBoard();
 
@@ -64,7 +60,6 @@ void FreeBoard(int **board);
  * makes a copy of a 4x4 matrix of ints, i.e. a 2048 board
  * @param board a pointer to a board
  * @return a pointer to a copy of given board
- * @calls MakeBoard()
  */
 int **CopyBoard(int **board);
 
@@ -72,19 +67,8 @@ int **CopyBoard(int **board);
  * prompts user for an input, with options to start a new Game, load a Game, or exit program
  * @param g a pointer to a Game
  * @return if exit: 0; else: 1
- * @calls Purge()
- * @calls NewGame()
- * @calls LoadGame()
  */
 int Menu(Game *g);
-
-/**
- * starts a new Game, setting all to default initial values, and spawning two 2s at random spots on board
- * @param g a pointer to a Game
- * @calls InitGame()
- * @calls SpawnTiles()
- */
-void NewGame(Game *g);
 
 /**
  * saves a Game to a unique .txt save file in program's root folder, with a default name: 'save_2048.txt'
@@ -114,11 +98,6 @@ void SpawnTiles(Game *g, int val, int n);
  * @param isOn a pointer to a boolean, that can tell main() if Game must go on; set to 0 if quitting
  * @param wasMove a pointer to a pseudo-boolean, that can tell main() if last action was a move; else, no spawn
  * @param g a pointer to a Game
- * @calls Purge()
- * @calls Rotate()
- * @calls Move()
- * @calls SaveGame()
- * @calls PromptMove()
  */
 void PromptMove(int *isOn, int *wasMove, Game *g);
 
@@ -126,8 +105,6 @@ void PromptMove(int *isOn, int *wasMove, Game *g);
  * accomplishes a move in a Game by sliding and fusing tiles to right
  * @param g a pointer to a Game
  * @return if move invalid: 1; else: 0 (nothing happened)
- * @calls Slide()
- * @calls Fuse()
  */
 int Move(Game *g);
 
@@ -145,7 +122,6 @@ void Slide(Game *g, int *hasMoved);
  * if any fusion was winning, i.e. produced 2048, go to win screen and exit
  * @param g a pointer to a Game
  * @param hasFused a pointer to a boolean, that can tell Move() if any tiles fused; set to 0 if not
- * @calls YouWin()
  */
 void Fuse(Game *g, int *hasFused);
 
@@ -153,8 +129,6 @@ void Fuse(Game *g, int *hasFused);
  * rotates a 4x4 matrix of ints, i.e. a 2048 board, 90 deg to right
  * @param board a pointer to a board
  * @param n number of rotations wanted; must be 1, 2, or 3
- * @calls CopyBoard()
- * @calls FreeBoard()
  */
 void Rotate(int **board, int n);
 
@@ -162,21 +136,18 @@ void Rotate(int **board, int n);
  * looks for two neighbouring identical values in a 4x4 matrix of ints, i.e. a 2048 board, with no 0s; if a pair is
  * found, return void, else: go to game over
  * @param g a pointer to a Game
- * @calls YouLose()
  */
 void CheckLose(Game *g);
 
 /**
  * prints a game over screen, frees memory allocated to Game, and exits program
  * @param g a pointer to a Game
- * @calls FreeGame()
  */
 void YouLose(Game *g);
 
 /**
  * prints a win screen, frees memory allocated to Game, and exits program
  * @param g a pointer to a Game
- * @calls FreeGame()
  */
 void YouWin(Game *g);
 
