@@ -13,19 +13,23 @@
 
 /**
  * a struct to represent a game of 2048
- * @properties board: a pointer to a 4x4 matrix of ints, i.e. a 2048 board
- * @properties score: an int for player score
- * @properties seconds: an int number of seconds passed since start of game
- * @properties isOn: boolean: is game on?
- * @properties wasMove: boolean: was the last action actually a move?
+ * @properties board: pointer to a 4x4 matrix of ints, i.e. a 2048 board
+ * @properties score: int, player score
+ * @properties free_tiles: int, number of remaining 0-tiles on board
+ * @properties millisecs: int, time since start of game
+ * @properties isOn: "boolean", is game on?
+ * @properties wasMove: "boolean", was last action actually a move?
  * @properties status: 1 for win, 2 for lose, 0 for normal
- * @properties screen: a pointer to an SDL_Surface
- * @properties fnt: a pointer to a TTF_Font
- * @properties fnt_clr: a pointer to an SDL_Color
+ * @properties screen: pointer to an SDL_Surface
+ * @properties screen_clr: Uint32 color, typically built from SDL_MapRGB()
+ * @properties fnt: pointer to a TTF_Font
+ * @properties fnt_clr: pointer to an SDL_Color
  */
 typedef struct Game_ {
     int **board;
     int score;
+    int free_tiles;
+    int millisecs;
     int isOn;
     int wasMove;
     int status;
@@ -151,12 +155,11 @@ void Fuse(Game *g, int *hasFused);
 void Rotate(int **board, int n);
 
 /**
- * looks for value 2048 in a Game board, while checking for free tiles, while checking for possible fusions;
- * if 2048, win; if no free tiles and no possible fusions, lose; else, normal
+ * looks for two neighbouring identical values in a Game board with no 0s; if a pair is
+ * found, return void, else: set Game status to 2 for lose
  * @param g a pointer to a Game
- * @return 1 for win, 2 for lose, 0 for normal
  */
-int CheckStatus(Game *g);
+void CheckLose(Game *g);
 
 /**
  * prints a 'you win' / 'you lose' screen, shows final score, offers path to menu

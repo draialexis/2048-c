@@ -14,6 +14,8 @@ void InitGame(Game *g) {
     }
     g->board = MakeBoard();
     g->score = 0;
+    g->free_tiles = 16;
+    g->millisecs = 0;
     g->wasMove = 0;
     g->status = 0;
     SpawnTiles(g, 2, 2);
@@ -275,6 +277,8 @@ void SaveGame(Game *g) {
             fprintf(fp, "\n");
         }
         fprintf(fp, "%d ", g->score);
+        fprintf(fp, "%d ", g->free_tiles);
+        fprintf(fp, "%d ", g->millisecs);
         fprintf(fp, "%d ", g->wasMove);
         fclose(fp);
     } else {
@@ -303,6 +307,10 @@ int LoadGame(Game *g) {
         fscanf(fp, "%d ", &tmp);
         g->score = tmp;
         fscanf(fp, "%d ", &tmp);
+        g->free_tiles = tmp;
+        fscanf(fp, "%d ", &tmp);
+        g->millisecs = tmp;
+        fscanf(fp, "%d ", &tmp);
         g->wasMove = tmp;
         g->isOn = 1;
         g->status = 0;
@@ -324,6 +332,7 @@ void SpawnTiles(Game *g, int val, int n) {
         int row = rand() % 4;
         if (g->board[row][col] == 0) {
             g->board[row][col] = val;
+            g->free_tiles -= 1;
             spawned++;
         }
     }
@@ -331,12 +340,12 @@ void SpawnTiles(Game *g, int val, int n) {
 
 void PromptMove(Game *g) {
     if (g == NULL) {
-        fprintf(stderr, "could not find game to prompt move, or other invalid param\n");
+        fprintf(stderr, "could not find game to prompt move\n");
         FAIL_OUT
     }
     g->wasMove = 0;
     SDL_Event evt;
-    MyWait(&evt);
+    SDL_WaitEvent(&evt);
     switch (evt.type) {
         case SDL_QUIT:
             g->isOn = 0;
@@ -377,6 +386,7 @@ void PromptMove(Game *g) {
                     break;
             }
     }
+
 }
 
 int Move(Game *g) {
@@ -427,10 +437,14 @@ void Fuse(Game *g, int *hasFused) {
         for (int j = 2; j >= 0; j--) {
             if (g->board[i][j] != 0 && g->board[i][j + 1] == g->board[i][j]) {
                 int newVal = g->board[i][j + 1] << 1;
+                if (newVal == 2048) {
+                    g->status = 1;
+                }
                 g->score += newVal;
                 g->board[i][j + 1] = newVal;
                 g->board[i][j] = 0;
                 *hasFused = 1;
+                g->free_tiles += 1;
             }
         }
     }
@@ -452,29 +466,26 @@ void Rotate(int **board, int n) {
     }
 }
 
-int CheckStatus(Game *g) {
+void CheckLose(Game *g) {
     if (g == NULL) {
-        fprintf(stderr, "could not find game to check status\n");
+        fprintf(stderr, "could not find game to check lose\n");
         FAIL_OUT
     }
-    int isFree = 0;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (g->board[i][j] == 2048) { return 1; } //you win
-            if (g->board[i][j] == 0) { isFree = 1; } //you don't lose
-            if (i < 3 && j < 3) {
-                if (g->board[i][j] == g->board[i][j + 1] ||
-                    g->board[i][j] == g->board[i + 1][j]) {
-                    isFree = 1; //you don't lose
-                }
+    if (g->free_tiles > 0) {
+        fprintf(stderr, "Uh oh -- there are free tiles on board, we shouldn't be checking for game over\n");
+        DEBUG
+        return;
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (g->board[i][j] == g->board[i][j + 1] ||
+                g->board[i][j] == g->board[i + 1][j]) {
+                return;
+                //a move is possible: we exit before reaching "you lose""
             }
         }
     }
-    if (isFree) {
-        return 0;
-    } else {
-        return 2; //you lose
-    }
+    g->status = 2;//no move was possible, set status to "lose"
 }
 
 int EndGame(Game *g) {

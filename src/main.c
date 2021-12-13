@@ -34,12 +34,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
         }
         //print out the game state
         DisplayGame(g);
-        //make sure the game can go on
-        g->status = CheckStatus(g);
+        //if board full, see if game over
+        if (g->free_tiles == 0) { CheckLose(g); }
         if (g->status != 0) {
-            if (EndGame(g)) {
-                goto start_game;
-            }
+            if (EndGame(g)) { goto start_game; }
         }
         //ask the player to make a move
         PromptMove(g);
