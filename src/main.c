@@ -6,12 +6,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
     srand(time(NULL));
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        DEBUG
         fprintf(stderr, "\nUnable to initialize SDL: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
     if (TTF_Init() != 0) {
-        DEBUG
         fprintf(stderr, "\nUnable to initialize TTF: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
@@ -34,16 +32,20 @@ int main(int argc, char **argv) {//not used, but important for SDL
             //spawn a tile, of val 2 or 4, somewhere on board
             SpawnTiles(g, rdVal, 1);
         }
+        //print out the game state
         DisplayGame(g);
-
+        //make sure the game can go on
         g->status = CheckStatus(g);
         if (g->status != 0) {
             if (EndGame(g)) {
                 goto start_game;
             }
         }
+        //ask the player to make a move
         PromptMove(g);
     }
     FreeGame(g);
+    TTF_Quit();
+    SDL_Quit();
     return EXIT_SUCCESS;
 }

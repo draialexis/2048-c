@@ -30,6 +30,7 @@ typedef struct Game_ {
     int wasMove;
     int status;
     SDL_Surface *screen;
+    Uint32 screen_clr;
     TTF_Font *fnt;
     SDL_Color fnt_clr;
 } Game;
@@ -42,6 +43,7 @@ Game *MakeGame();
 
 /**
  * initializes a Game: allocating memory for board, setting all values to initial state
+ * and spawning two 2s at random spots on board
  * @param g a pointer to a Game
  */
 void InitGame(Game *g);
@@ -53,7 +55,7 @@ void InitGame(Game *g);
 void DisplayGame(Game *g);
 
 /**
- * frees memory allocated to a Game
+ * frees memory allocated to a Game, including surface and font
  * @param g a pointer to a Game
  */
 void FreeGame(Game *g);
@@ -89,12 +91,6 @@ int **CopyBoard(int **board);
  * @return if exit: 0; else: 1
  */
 int Menu(Game *g);
-
-/**
- * starts a new Game, setting all to default initial values, and spawning two 2s at random spots on board
- * @param g a pointer to a Game
- */
-void NewGame(Game *g);
 
 /**
  * saves a Game to a unique .txt save file in program's root folder, with a default name: 'save.txt'
