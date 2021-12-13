@@ -322,8 +322,8 @@ void Fuse(Game *g, int *hasFused) {
         for (int j = 2; j >= 0; j--) {
             if (g->board[i][j] != 0 && g->board[i][j + 1] == g->board[i][j]) {
                 int newVal = g->board[i][j + 1] << 1;
-                if (newVal == 2048) { YouWin(g); }
                 g->score += newVal;
+                if (newVal == 2048) { YouWin(g); }
                 g->board[i][j + 1] = newVal;
                 g->board[i][j] = 0;
                 g->free_tiles += 1;
