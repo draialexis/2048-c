@@ -14,7 +14,6 @@ void InitGame(Game *g) {
     }
     g->board = MakeBoard();
     g->score = 0;
-    g->seconds = 0;
     g->wasMove = 0;
     g->status = 0;
 }
@@ -24,10 +23,15 @@ void DisplayGame(Game *g) {
         printf("could not find game to display\n");
         FAIL_OUT
     }
+    SDL_FreeSurface(g->screen);
+    if (SDL_FillRect(g->screen, NULL, SDL_MapRGB(g->screen->format, 230, 230, 230)) != 0) {
+        DEBUG
+        fprintf(stderr, "\nUnable to initialize screen: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+
     SDL_Rect pos;
-
     char *prompt_str = "(s)auver | (c)harger";
-
     pos.x = PAD;
     pos.y = PAD;//1st line
     SDL_Surface *prompt = NULL;
@@ -340,7 +344,6 @@ void SaveGame(Game *g) {
             fprintf(fp, "\n");
         }
         fprintf(fp, "%d ", g->score);
-        fprintf(fp, "%d ", g->seconds);
         fprintf(fp, "%d ", g->wasMove);
         fclose(fp);
         printf("partie sauvegardee\n");
@@ -370,8 +373,6 @@ int LoadGame(Game *g) {
         }
         fscanf(fp, "%d ", &tmp);
         g->score = tmp;
-        fscanf(fp, "%d ", &tmp);
-        g->seconds = tmp;
         fscanf(fp, "%d ", &tmp);
         g->wasMove = tmp;
         g->isOn = 1;

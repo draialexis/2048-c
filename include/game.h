@@ -26,7 +26,6 @@
 typedef struct Game_ {
     int **board;
     int score;
-    int seconds;
     int isOn;
     int wasMove;
     int status;
