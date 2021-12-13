@@ -1,4 +1,4 @@
-#include "toolbox.h"
+#include "../include/toolbox.h"
 
 int GetInput() {
     int res = getchar();

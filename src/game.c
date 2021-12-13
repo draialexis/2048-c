@@ -1,5 +1,5 @@
-#include "game.h"
-#include "toolbox.h"
+#include "../include/game.h"
+#include "../include/toolbox.h"
 
 Game *MakeGame() {
     Game *res = NULL;

@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -Wall
 LDFLAGS=
-SOURCES=src/main.c include/toolbox.c include/game.c
+SOURCES=src/main.c src/toolbox.c src/game.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=bin/prog
 .PHONY: clean
