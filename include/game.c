@@ -16,6 +16,7 @@ void InitGame(Game *g) {
     g->board = MakeBoard();
     g->score = 0;
     g->free_tiles = 16;
+    SpawnTiles(g, 2, 2);
 }
 
 void DisplayGame(Game *g) {
@@ -106,7 +107,7 @@ int Menu(Game *g) {
 
     switch (input) {
         case 'n':
-            NewGame(g);
+            InitGame(g);
             return 1;
         case 'l':
             if (LoadGame(g)) {
@@ -121,15 +122,6 @@ int Menu(Game *g) {
             printf("requete non comprise\n");
             return Menu(g);
     }
-}
-
-void NewGame(Game *g) {
-    if (g == NULL) {
-        printf("could not find game to start new\n");
-        FAIL_OUT
-    }
-    InitGame(g);
-    SpawnTiles(g, 2, 2);
 }
 
 void SaveGame(Game *g) {
