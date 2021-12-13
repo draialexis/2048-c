@@ -22,16 +22,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
 
-    Uint32 current_time = 0, prev_time = 0;
-    int second = 1000;
-    char time_str[32] = "secondes : ";
+    Uint32 current_time;
+    Uint32 prev_time = 0;
+    char time_str[32] = "";
     SDL_Surface *counter_dis = NULL;
-    counter_dis = TTF_RenderText_Solid(g->fnt, time_str, g->fnt_clr);//time counter display
-    if (counter_dis == NULL) {
-        DEBUG
-        fprintf(stderr, "\nTTF RenderText error: %s\n", TTF_GetError());
-        exit(EXIT_FAILURE);
-    }
     SDL_Rect pos;
 
     while (g->isOn) {
@@ -55,11 +49,11 @@ int main(int argc, char **argv) {//not used, but important for SDL
         }
 
         current_time = SDL_GetTicks();
-        if (current_time - prev_time >= second) {
-            g->seconds += second / 1000;
+        if (current_time - prev_time >= 1000) {
+            g->seconds += 1;
             sprintf(time_str, "secondes : %d", g->seconds);
             SDL_FreeSurface(counter_dis);
-            counter_dis = TTF_RenderText_Blended(g->fnt, time_str, g->fnt_clr);
+            counter_dis = TTF_RenderText_Blended(g->fnt, time_str, g->fnt_clr);//time counter display
             if (counter_dis == NULL) {
                 DEBUG
                 fprintf(stderr, "\nTTF RenderText error: %s\n", TTF_GetError());
