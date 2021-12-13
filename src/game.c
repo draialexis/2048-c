@@ -43,6 +43,12 @@ void DisplayGame(Game *g) {
     SDL_Surface *score_dis = MyRenderText(g->fnt, score_str, g->fnt_clr);
     MyBlit(score_dis, NULL, g->screen, &pos);
 
+    pos.y += H_T;//3rd line
+    char time_str[32];
+    sprintf(time_str, "secondes : %d", (int) g->millisecs / 1000);
+    SDL_Surface *time_dis = MyRenderText(g->fnt, time_str, g->fnt_clr);
+    MyBlit(time_dis, NULL, g->screen, &pos);
+
     pos.y = HDR + PAD; //1st tile
     SDL_Surface *tile = NULL;
     char val_str[5];
@@ -124,6 +130,7 @@ void DisplayGame(Game *g) {
     MyFlip(g->screen);
     SDL_FreeSurface(prompt_dis);
     SDL_FreeSurface(score_dis);
+    SDL_FreeSurface(time_dis);
     SDL_FreeSurface(tile);
 }
 
@@ -345,48 +352,55 @@ void PromptMove(Game *g) {
     }
     g->wasMove = 0;
     SDL_Event evt;
-    SDL_WaitEvent(&evt);
-    switch (evt.type) {
-        case SDL_QUIT:
-            g->isOn = 0;
-            break;
-        case SDL_KEYDOWN:
-            switch (evt.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                    g->isOn = 0;
-                    break;
-                case SDLK_UP://rotate 90°, slide to right, rotate another 270°
-                    Rotate(g->board, 1);
-                    g->wasMove = Move(g);
-                    Rotate(g->board, 3);
-                    break;
-                case SDLK_RIGHT://slide to right
-                    g->wasMove = Move(g);
-                    break;
-                case SDLK_DOWN://rotate 270°, slide to right, rotate another 90°
-                    Rotate(g->board, 3);
-                    g->wasMove = Move(g);
-                    Rotate(g->board, 1);
-                    break;
-                case SDLK_LEFT://rotate 180°, slide to right, rotate another 180°
-                    Rotate(g->board, 2);
-                    g->wasMove = Move(g);
-                    Rotate(g->board, 2);
-                    break;
-                case 's':
-                    SaveGame(g);
-                    break;
-                case 'c':
-                    LoadGame(g);
-                    break;
-                case 'n':
-                    InitGame(g);
-                    break;
-                default:
-                    break;
-            }
-    }
 
+    Uint32 prv_time = g->millisecs;//milliseconds ellapsed since last iteration
+    if (SDL_PollEvent(&evt)) {
+        switch (evt.type) {
+            case SDL_QUIT:
+                g->isOn = 0;
+                break;
+            case SDL_KEYDOWN:
+                switch (evt.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        g->isOn = 0;
+                        break;
+                    case SDLK_UP://rotate 90°, slide to right, rotate another 270°
+                        Rotate(g->board, 1);
+                        g->wasMove = Move(g);
+                        Rotate(g->board, 3);
+                        break;
+                    case SDLK_RIGHT://slide to right
+                        g->wasMove = Move(g);
+                        break;
+                    case SDLK_DOWN://rotate 270°, slide to right, rotate another 90°
+                        Rotate(g->board, 3);
+                        g->wasMove = Move(g);
+                        Rotate(g->board, 1);
+                        break;
+                    case SDLK_LEFT://rotate 180°, slide to right, rotate another 180°
+                        Rotate(g->board, 2);
+                        g->wasMove = Move(g);
+                        Rotate(g->board, 2);
+                        break;
+                    case 's':
+                        SaveGame(g);
+                        break;
+                    case 'c':
+                        LoadGame(g);
+                        break;
+                    case 'n':
+                        InitGame(g);
+                        break;
+                    default:
+                        break;//TODO not a good idea
+                }
+        }
+    }
+    g->millisecs = SDL_GetTicks();//milliseconds ellapsed since SDL_Init
+    Uint32 passed = g->millisecs - prv_time;//time passed in this iteration
+    if (passed < ITV) {
+        SDL_Delay(ITV - passed);
+    }
 }
 
 int Move(Game *g) {
@@ -513,7 +527,7 @@ int EndGame(Game *g) {
     MyBlit(gameover_dis, NULL, g->screen, &pos);
 
     pos.y += H_T;//2nd line
-    char score_str[64] = "";
+    char score_str[64];
     sprintf(score_str, "score final : %d", g->score);
     SDL_Surface *score_dis = MyRenderText(g->fnt, score_str, g->fnt_clr);
     MyBlit(score_dis, NULL, g->screen, &pos);

@@ -8,6 +8,7 @@
 #define H_T 30 //(approx) height of text
 #define TIL ((WID - (PAD * 5)) / 4) //length of a tile's side
 #define BPP 32 //bits per pixel
+#define ITV 38 //interval wanted between two frames, in ms (around 26FPS)
 
 #include "toolbox.h"
 
@@ -16,7 +17,7 @@
  * @properties board: pointer to a 4x4 matrix of ints, i.e. a 2048 board
  * @properties score: int, player score
  * @properties free_tiles: int, number of remaining 0-tiles on board
- * @properties millisecs: int, time since start of game
+ * @properties millisecs: Uint32, time since start of game in milliseconds
  * @properties isOn: "boolean", is game on?
  * @properties wasMove: "boolean", was last action actually a move?
  * @properties status: 1 for win, 2 for lose, 0 for normal
@@ -29,7 +30,7 @@ typedef struct Game_ {
     int **board;
     int score;
     int free_tiles;
-    int millisecs;
+    Uint32 millisecs;
     int isOn;
     int wasMove;
     int status;

@@ -36,7 +36,9 @@ int main(int argc, char **argv) {//not used, but important for SDL
         DisplayGame(g);
         //if board full, see if game over
         if (g->free_tiles == 0) { CheckLose(g); }
+        //if win or lose, send to end game
         if (g->status != 0) {
+            //if player chooses to restart, go back to start
             if (EndGame(g)) { goto start_game; }
         }
         //ask the player to make a move
