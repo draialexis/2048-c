@@ -19,17 +19,17 @@ gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -lSDL_ttf  -
 bin/prog
 ```
 ### Console version
-Can be compiled on any OS, as long as you have a C compiler (examples below use GCC)
-#### With ***make***
+#### Linux with ***make***
 ```
 make console
 bin/console
 ```
+Can be compiled on any OS, as long as you have a C compiler (example below uses GCC)
 #### Without ***make***
 ```
 gcc -c -Wall console/src_b/main_b.c -o console/src_b/main_b.o
 gcc -c -Wall console/src_b/toolbox_b.c -o console/src_b/toolbox_b.o
 gcc -c -Wall console/src_b/game_b.c -o console/src_b/game_b.o
-gcc console/src_b/main_b.o console/src_b/toolbox_b.o console/src_b/game_b.o -o bin/console
-bin/console
+gcc console/src_b/main_b.o console/src_b/toolbox_b.o console/src_b/game_b.o -o bin/_EXEC_FILE_NAME_HERE_
+bin/_EXEC_FILE_NAME_HERE_
 ```
