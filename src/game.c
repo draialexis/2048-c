@@ -121,10 +121,10 @@ void DisplayGame(Game *g) {
                 MyBlit(val_dis, NULL, g->screen, &pos_val);
                 SDL_FreeSurface(val_dis);
             }
-            //move right in inner loop
+            //(in inner loop) move right
             pos.x += TIL + PAD;
         }
-        //move back left then down in outer loop
+        //(in outer loop) move back left then down
         pos.x = PAD;
         pos.y += TIL + PAD;
     }
@@ -352,7 +352,6 @@ void PromptMove(Game *g) {
         fprintf(stderr, "could not find game to prompt move\n");
         FAIL_OUT
     }
-    Uint32 prv_time = SDL_GetTicks();//time spent since SDL_Init()
     g->wasMove = 0;//don't know if a move will happen yet
 
     SDL_Event evt;
@@ -398,11 +397,6 @@ void PromptMove(Game *g) {
                 }
         }
     }
-    Uint32 spent = SDL_GetTicks() - prv_time;//time spent in this iteration
-    if (spent < ITV) {
-        SDL_Delay(ITV - spent);
-        g->msecs += ITV;
-    } else { g->msecs += spent; }
 }
 
 int Move(Game *g) {

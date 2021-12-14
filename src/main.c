@@ -25,8 +25,10 @@ int main(int argc, char **argv) {//not used, but important for SDL
     g->isOn = Menu(g);
     int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
+    Uint32 prv_time;
 
     while (g->isOn) {
+        prv_time = SDL_GetTicks();//time spent since SDL_Init()
         if (isFirst) {
             isFirst = 0;
         } else if (g->wasMove) {
@@ -49,6 +51,11 @@ int main(int argc, char **argv) {//not used, but important for SDL
         }
         //ask the player to make a move
         PromptMove(g);
+        Uint32 spent = SDL_GetTicks() - prv_time;//time spent in this iteration
+        if (spent < ITV) {
+            SDL_Delay(ITV - spent);
+            g->msecs += ITV;
+        } else { g->msecs += spent; }
     }
     FreeGame(g);
     TTF_Quit();
