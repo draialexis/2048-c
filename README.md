@@ -3,8 +3,25 @@
 ([instructions.pdf](https://github.com/draialexis/2048-c/files/7647069/TP_DM_subj.pdf))
 
 ## Compiling and executing
+You will need to use **Linux**
 ### Graphical version (main) with SDL
-You will need to use Linux, and install SDL 1.2 on you system first, as well as the TTF library.
+You will need to install SDL 1.2 on you system as well as the TTF library, as needed:
+
+```
+sudo apt-get install libsdl1.2debian
+sudo apt-get install libsdl-ttf2.0-0
+```
+
+That should be enough for you to run the executable (`cd` to the `2048-c` folder, then run `bin/prog`)
+
+To compile the program yourself, you'll need to install ***gcc*** and ***make*** as needed, and the *dev* versions of the appropriate SDL libraries:
+```
+sudo apt install gcc
+sudo apt install make
+sudo apt-get install libsdl1.2-dev
+sudo apt-get install libsdl-ttf2.0-dev
+```
+
 #### Linux with ***make***
 ```
 make
@@ -15,9 +32,10 @@ bin/prog
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc -c -Wall `sdl-config --cflags` src/toolbox.c -o src/toolbox.o
 gcc -c -Wall `sdl-config --cflags` src/game.c -o src/game.o
-gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -lSDL_ttf  -o bin/prog
-bin/prog
+gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -lSDL_ttf  -o bin/_EXEC_FILE_NAME_HERE_
+bin/_EXEC_FILE_NAME_HERE_
 ```
+---
 ### Console version
 #### Linux with ***make***
 ```
