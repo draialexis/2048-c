@@ -244,27 +244,12 @@ void PromptMove(int *isOn, int *wasMove, Game *g) {
             *isOn = 0;
             break;
         case 's':
-            printf("ecraser la derniere sauvegarde?\n"
-                   "oui:... o\n"
-                   "non:... n\n"
-                   ">");
-            input_bis = GetInput();
-            if (input_bis == 'o') {
-                SaveGame(g);
-                isSuccess = 1;
-            }
+            SaveGame(g);
+            isSuccess = 1;
             break;
         case 'c':
-            printf("quitter et charger la derniere sauvegarde?\n"
-                   "oui:... o\n"
-                   "non:... n\n"
-                   ">");
-
-            input_bis = GetInput();
-            if (input_bis == 'o') {
-                LoadGame(g);
-                isSuccess = 1;
-            }
+            LoadGame(g);
+            isSuccess = 1;
             break;
         default:
             printf("commande non valide\n");
