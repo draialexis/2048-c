@@ -325,10 +325,8 @@ void Rotate(int **board, int n) {
     }
     for (int a = 0; a < n; a++) {
         int **aux = CopyBoard(board); // original copy of board
-        int rows = 4;
-        int cols = 4;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
                 board[j][3 - i] = aux[i][j];
             }
         }
