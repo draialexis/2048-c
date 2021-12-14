@@ -33,6 +33,6 @@ int main(int argc, char **argv) {
 
         PromptMove(&isOn, &wasMove, g);
     }
-
+    FreeGame(g);
     return EXIT_SUCCESS;
 }
