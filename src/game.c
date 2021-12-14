@@ -1,3 +1,5 @@
+//// Walid EL CHEIK, Alexis DRAI, 17/12/2021
+
 #include "../include/game.h"
 
 Game *MakeGame() {
