@@ -522,14 +522,14 @@ int EndGame(Game *g) {
     SDL_Rect pos;
 
     pos.x = PAD, pos.y = PAD;//1st line
-    char gameover_str[64];
+    char gameover_str[32];
     if (g->status == 2) { sprintf(gameover_str, "Game Over... (m)enu ?"); }
     else if (g->status == 1) { sprintf(gameover_str, "2 0 4 8 !.. (m)enu ?"); }
     SDL_Surface *gameover_dis = MyRenderText(g->fnt, gameover_str, g->fnt_clr);
     MyBlit(gameover_dis, NULL, g->screen, &pos);
 
     pos.y += H_T;//2nd line
-    char score_str[64];
+    char score_str[32];
     sprintf(score_str, "score final : %d", g->score);
     SDL_Surface *score_dis = MyRenderText(g->fnt, score_str, g->fnt_clr);
     MyBlit(score_dis, NULL, g->screen, &pos);
