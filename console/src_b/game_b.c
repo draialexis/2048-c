@@ -99,7 +99,7 @@ int Menu(Game *g) {
     }
     printf("=_=_=_=_=_ 2048 _=_=_=_=_=\n"
            "nouvelle partie:. n\n"
-           "charger partie:.. l\n"
+           "charger partie:.. c\n"
            "quitter:......... q\n"
            ">");
 
@@ -109,7 +109,7 @@ int Menu(Game *g) {
         case 'n':
             InitGame(g);
             return 1;
-        case 'l':
+        case 'c':
             if (LoadGame(g)) {
                 return 1;
             } else {
@@ -157,7 +157,7 @@ int LoadGame(Game *g) {
     }
     printf("chargement...\n");
     FILE *fp = NULL;
-    char *fname = "data/save.txt";
+    char *fname = "data_b/save_b.txt";
     fp = fopen(fname, "r");
     if (isFOpen(fp, fname)) {
         int tmp;
