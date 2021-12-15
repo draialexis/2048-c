@@ -133,7 +133,7 @@ void SaveGame(Game *g) {
     }
     printf("sauvegarde...\n");
     FILE *fp = NULL;
-    char *fname = "data_b/save.txt";
+    char *fname = "console/data_b/save.txt";
     fp = fopen(fname, "w+");
     if (isFOpen(fp, fname)) {
         for (int i = 0; i < 4; i++) {
@@ -159,7 +159,7 @@ int LoadGame(Game *g) {
     }
     printf("chargement...\n");
     FILE *fp = NULL;
-    char *fname = "data_b/save.txt";
+    char *fname = "console/data_b/save.txt";
     fp = fopen(fname, "r");
     if (isFOpen(fp, fname)) {
         int tmp;
