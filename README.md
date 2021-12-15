@@ -32,12 +32,12 @@ bin/prog
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc -c -Wall `sdl-config --cflags` src/toolbox.c -o src/toolbox.o
 gcc -c -Wall `sdl-config --cflags` src/game.c -o src/game.o
-gcc src/main.o include/toolbox.o include/game.o `sdl-config --libs` -lSDL_ttf  -o bin/_EXEC_FILE_NAME_HERE_
-bin/_EXEC_FILE_NAME_HERE_
+gcc src/main.o src/toolbox.o src/game.o `sdl-config --libs` -lSDL_ttf  -o bin/prog
+bin/prog
 ```
 ---
 ### Console version
-#### Linux with ***make***
+#### With ***make***
 ```
 make console
 bin/console
@@ -48,6 +48,6 @@ Can be compiled on any OS, as long as you have a C compiler (example below uses 
 gcc -c -Wall console/src_b/main_b.c -o console/src_b/main_b.o
 gcc -c -Wall console/src_b/toolbox_b.c -o console/src_b/toolbox_b.o
 gcc -c -Wall console/src_b/game_b.c -o console/src_b/game_b.o
-gcc console/src_b/main_b.o console/src_b/toolbox_b.o console/src_b/game_b.o -o bin/_EXEC_FILE_NAME_HERE_
-bin/_EXEC_FILE_NAME_HERE_
+gcc console/src_b/main_b.o console/src_b/toolbox_b.o console/src_b/game_b.o -o bin/prog
+bin/prog
 ```
