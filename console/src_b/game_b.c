@@ -159,7 +159,7 @@ int LoadGame(Game *g) {
     }
     printf("chargement...\n");
     FILE *fp = NULL;
-    char *fname = "data_b/save_b.txt";
+    char *fname = "data/save.txt";
     fp = fopen(fname, "r");
     if (isFOpen(fp, fname)) {
         int tmp;

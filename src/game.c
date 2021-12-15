@@ -288,7 +288,6 @@ void SaveGame(Game *g) {
         fprintf(fp, "%d ", g->score);
         fprintf(fp, "%d ", g->free_tiles);
         fprintf(fp, "%d ", g->msecs);
-        fprintf(fp, "%d ", g->wasMove);
         fclose(fp);
     } else {
         FAIL_OUT
@@ -319,8 +318,6 @@ int LoadGame(Game *g) {
         g->free_tiles = tmp;
         fscanf(fp, "%d ", &tmp);
         g->msecs = tmp;
-        fscanf(fp, "%d ", &tmp);
-        g->wasMove = tmp;
         g->isOn = 1;
         g->status = 0;
         fclose(fp);
@@ -548,6 +545,7 @@ int EndGame(Game *g) {
                     SDL_FreeSurface(score_dis);
                     SDL_FreeSurface(gameover_dis);
                     free(hdr);
+                    FreeGame(g);
                     return 1;
                 case SDLK_ESCAPE:
                     goto quit;
