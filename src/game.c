@@ -145,13 +145,13 @@ void FreeGame(Game *g) {
     }
 }
 
-int **MakeBoard() {
-    int **board = NULL;
-    board = malloc(4 * sizeof(int *));
+unsigned short int **MakeBoard() {
+    unsigned short int **board = NULL;
+    board = malloc(4 * sizeof(unsigned short int *));
     if (board == NULL) { MALLOC_FAIL }
     for (int i = 0; i < 4; i++) {
         board[i] = NULL;
-        board[i] = malloc(4 * (sizeof(int)));
+        board[i] = malloc(4 * (sizeof(unsigned short int)));
         if (board[i] == NULL) {
             FreeBoard(board);
             MALLOC_FAIL
@@ -161,7 +161,7 @@ int **MakeBoard() {
     return board;
 }
 
-void InitBoard(int **board) {
+void InitBoard(unsigned short int **board) {
     if (board == NULL) {
         fprintf(stderr, "could not find board to initialize\n");
         FAIL_OUT
@@ -173,7 +173,7 @@ void InitBoard(int **board) {
     }
 }
 
-void FreeBoard(int **board) {
+void FreeBoard(unsigned short int **board) {
     if (board != NULL) {
         for (int i = 0; i < 4; i++) {
             if (board[i] != NULL) { free(board[i]); }
@@ -182,12 +182,12 @@ void FreeBoard(int **board) {
     }
 }
 
-int **CopyBoard(int **board) {
+unsigned short int **CopyBoard(unsigned short int **board) {
     if (board == NULL) {
         fprintf(stderr, "could not find board to copy\n");
         FAIL_OUT
     }
-    int **res = MakeBoard();
+    unsigned short int **res = MakeBoard();
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             res[i][j] = board[i][j];
@@ -327,7 +327,7 @@ int LoadGame(Game *g) {
     }
 }
 
-void SpawnTiles(Game *g, int val, int n) {
+void SpawnTiles(Game *g, unsigned short int val, int n) {
     if (g == NULL || (val != 2 && val != 4) || (n != 1 && n != 2)) {
         fprintf(stderr, "could not find game to spawn tiles, or other invalid param\n");
         FAIL_OUT
@@ -457,13 +457,13 @@ void Fuse(Game *g, int *hasFused) {
     }
 }
 
-void Rotate(int **board, int n) {
+void Rotate(unsigned short int **board, int n) {
     if (board == NULL || n < 1 || n > 3) {
         fprintf(stderr, "could not find board to rotate, or other invalid param\n");
         FAIL_OUT
     }
     for (int a = 0; a < n; a++) {
-        int **aux = CopyBoard(board); // original copy of board
+        unsigned short int **aux = CopyBoard(board); // original copy of board
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 board[j][3 - i] = aux[i][j];

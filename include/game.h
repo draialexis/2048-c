@@ -27,17 +27,17 @@
  * @properties fnt_clr: pointer to an SDL_Color
  */
 typedef struct Game_ {
-    int **board;
-    int score;
-    int free_tiles;
+    SDL_Surface *screen;
+    TTF_Font *fnt;
     Uint32 msecs;
+    Uint32 screen_clr;
+    SDL_Color fnt_clr;
+    unsigned short int **board;
+    unsigned short int score;
+    unsigned short int free_tiles;
     int isOn;
     int wasMove;
     int status;
-    SDL_Surface *screen;
-    Uint32 screen_clr;
-    TTF_Font *fnt;
-    SDL_Color fnt_clr;
 } Game;
 
 /**
@@ -66,29 +66,29 @@ void DisplayGame(Game *g);
 void FreeGame(Game *g);
 
 /**
- * allocates memory for a 4x4 matrix of ints, i.e. a 2048 board, then setting all values to 0
+ * allocates memory for a 4x4 matrix of unsigned short ints, i.e. a 2048 board, then setting all values to 0
  * @return a pointer to board
  */
-int **MakeBoard();
+unsigned short int **MakeBoard();
 
 /**
- * initializes a 4x4 matrix of ints, i.e. a 2048 board, by setting all values to 0
+ * initializes a 4x4 matrix of unsigned short ints, i.e. a 2048 board, by setting all values to 0
  * @param board a pointer to a board
  */
-void InitBoard(int **board);
+void InitBoard(unsigned short int **board);
 
 /**
- * frees memory allocated to a 4x4 matrix of ints, i.e. a 2048 board
+ * frees memory allocated to a 4x4 matrix of unsigned short ints, i.e. a 2048 board
  * @param board a pointer to a board
  */
-void FreeBoard(int **board);
+void FreeBoard(unsigned short int **board);
 
 /**
- * makes a copy of a given 4x4 matrix of ints, i.e. a 2048 board
+ * makes a copy of a given 4x4 matrix of unsigned short ints, i.e. a 2048 board
  * @param board a pointer to a board
  * @return a pointer to a copy of given board
  */
-int **CopyBoard(int **board);
+unsigned short int **CopyBoard(unsigned short int **board);
 
 /**
  * prompts user for an input, with options to start a new Game, load a Game, or exit program
@@ -116,7 +116,7 @@ int LoadGame(Game *g);
  * @param val a value to be placed on board; must be 2 or 4
  * @param n number of '0-locations' to be set; must be 1 or 2
  */
-void SpawnTiles(Game *g, int val, int n);
+void SpawnTiles(Game *g, unsigned short int val, int n);
 
 /**
  * executes user input for a move, with options for 'up', 'right', 'down', and 'left'; as well as for saving, quitting,
@@ -149,11 +149,11 @@ void Slide(Game *g, int *hasMoved);
 void Fuse(Game *g, int *hasFused);
 
 /**
- * rotates a 4x4 matrix of ints, i.e. a 2048 board, 90 degrees to right
+ * rotates a 4x4 matrix of unsigned short ints, i.e. a 2048 board, 90 degrees to right
  * @param board a pointer to a board
  * @param n number of rotations wanted; must be 1, 2, or 3
  */
-void Rotate(int **board, int n);
+void Rotate(unsigned short int **board, int n);
 
 /**
  * looks for two neighbouring identical values in a Game board with no 0s; if a pair is
