@@ -6,7 +6,7 @@
 ### Graphical version (main) with SDL
 You will need to use **Linux**.
 
-You will need to install SDL 1.2 on you system as well as the TTF library, as needed:
+You will need to install SDL 1.2 on your system as well as the TTF library, as needed:
 
 ```
 sudo apt-get install libsdl1.2debian
