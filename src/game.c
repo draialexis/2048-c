@@ -281,12 +281,12 @@ void SaveGame(Game *g) {
     if (isFOpen(fp, fname)) {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                fprintf(fp, "%d ", g->board[i][j]);
+                fprintf(fp, "%hu ", g->board[i][j]);
             }
             fprintf(fp, "\n");
         }
-        fprintf(fp, "%d ", g->score);
-        fprintf(fp, "%d ", g->free_tiles);
+        fprintf(fp, "%hu ", g->score);
+        fprintf(fp, "%hu ", g->free_tiles);
         fprintf(fp, "%d ", g->msecs);
         fclose(fp);
     } else {
@@ -303,21 +303,22 @@ int LoadGame(Game *g) {
     char *fname = "data/save.txt";
     fp = fopen(fname, "r");
     if (isFOpen(fp, fname)) {
-        int tmp;
+        unsigned short int tmp;
+        int msec;
         InitGame(g);
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                fscanf(fp, "%d ", &tmp);
+                fscanf(fp, "%hu ", &tmp);
                 g->board[i][j] = tmp;
             }
             fscanf(fp, "\n");
         }
-        fscanf(fp, "%d ", &tmp);
+        fscanf(fp, "%hu ", &tmp);
         g->score = tmp;
-        fscanf(fp, "%d ", &tmp);
+        fscanf(fp, "%hu ", &tmp);
         g->free_tiles = tmp;
-        fscanf(fp, "%d ", &tmp);
-        g->msecs = tmp;
+        fscanf(fp, "%d ", &msec);
+        g->msecs = msec;
         g->isOn = 1;
         g->status = 0;
         fclose(fp);

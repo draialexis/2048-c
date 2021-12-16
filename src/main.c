@@ -22,7 +22,7 @@ int main(int argc, char **argv) {//not used, but important for SDL
     start_game:;
     Game *g = MakeGame(); // pointer to game
     g->isOn = Menu(g);
-    int rdVal; // a random value to be used for tile spawning
+    unsigned short int rdVal; // a random value to be used for tile spawning
     int isFirst = 1; // boolean: is it round 1?
     Uint32 prv_time;
 

@@ -14,9 +14,9 @@
 
 /**
  * a struct to represent a game of 2048
- * @properties board: pointer to a 4x4 matrix of ints, i.e. a 2048 board
- * @properties score: int, player score
- * @properties free_tiles: int, number of remaining 0-tiles on board
+ * @properties board: pointer to a 4x4 matrix of unsigned short ints, i.e. a 2048 board
+ * @properties score: unsigned short int, player score
+ * @properties free_tiles: unsigned short int, number of remaining 0-tiles on board
  * @properties msecs: Uint32, time since start of game in milliseconds
  * @properties isOn: "boolean", is game on?
  * @properties wasMove: "boolean", was last action actually a move?
@@ -32,12 +32,12 @@ typedef struct Game_ {
     Uint32 msecs;
     Uint32 screen_clr;
     SDL_Color fnt_clr;
-    unsigned short int **board;
-    unsigned short int score;
-    unsigned short int free_tiles;
     int isOn;
     int wasMove;
     int status;
+    unsigned short int **board;
+    unsigned short int score;
+    unsigned short int free_tiles;
 } Game;
 
 /**

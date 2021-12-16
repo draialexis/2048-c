@@ -3,14 +3,14 @@
 
 /**
  * a struct to represent a game of 2048
- * @property board: a pointer to a 4x4 matrix of ints
- * @property score: an int for player's score
- * @property free_tiles: an int for remaining number of free tiles (val=0) on board
+ * @property board: a pointer to a 4x4 matrix of unsigned short ints
+ * @property score: an unsigned short int for player's score
+ * @property free_tiles: an unsigned short int for remaining number of free tiles (val=0) on board
  */
 typedef struct Game_ {
-    int **board;
-    int score;
-    int free_tiles;
+    unsigned short int **board;
+    unsigned short int score;
+    unsigned short int free_tiles;
 } Game;
 
 /**
@@ -42,26 +42,26 @@ void FreeGame(Game *g);
  * allocates memory for a 4x4 matrix of ints, i.e. a 2048 board, then setting all values to 0
  * @return a pointer to board
  */
-int **MakeBoard();
+unsigned short int **MakeBoard();
 
 /**
- * initializes a 4x4 matrix of ints, i.e. a 2048 board, setting all values to 0
+ * initializes a 4x4 matrix of unsigned short ints, i.e. a 2048 board, setting all values to 0
  * @param board a pointer to a board
  */
-void InitBoard(int **board);
+void InitBoard(unsigned short int **board);
 
 /**
- * frees memory allocated to a 4x4 matrix of ints, i.e. a 2048 board
+ * frees memory allocated to a 4x4 matrix of unsigned short ints, i.e. a 2048 board
  * @param board a pointer to a board
  */
-void FreeBoard(int **board);
+void FreeBoard(unsigned short int **board);
 
 /**
- * makes a copy of a 4x4 matrix of ints, i.e. a 2048 board
+ * makes a copy of a 4x4 matrix of unsigned short ints, i.e. a 2048 board
  * @param board a pointer to a board
  * @return a pointer to a copy of given board
  */
-int **CopyBoard(int **board);
+unsigned short int **CopyBoard(unsigned short int **board);
 
 /**
  * prompts user for an input, with options to start a new Game, load a Game, or exit program
@@ -84,13 +84,13 @@ void SaveGame(Game *g);
 int LoadGame(Game *g);
 
 /**
- * sets a number of random '0-locations' in a 4x4 matrix of ints, i.e. a 2048 board, to certain values;
+ * sets a number of random '0-locations' in a 4x4 matrix of unsigned short ints, i.e. a 2048 board, to certain values;
  * decrements a Game's free_tiles property after each addition
  * @param g a pointer to a Game
  * @param val a value to be placed on board; must be 2 or 4
  * @param n number of '0-locations' to be set; must be 1 or 2
  */
-void SpawnTiles(Game *g, int val, int n);
+void SpawnTiles(Game *g, unsigned short int val, int n);
 
 /**
  * executes user input for a move, with options for 'up', 'right', 'down', and 'left'; as well as for saving, quitting,
@@ -109,7 +109,7 @@ void PromptMove(int *isOn, int *wasMove, Game *g);
 int Move(Game *g);
 
 /**
- * slides all tiles from a 4x4 matrix of ints, i.e. a 2048 board, to right, until they encounter an obstacle, where
+ * slides all tiles from a 4x4 matrix of unsigned short ints, i.e. a 2048 board, to right, until they encounter an obstacle, where
  * they stop
  * @param g a pointer to a Game
  * @param hasMoved a pointer to a boolean, that can tell Move() if any tiles moved; set to 0 if not
@@ -126,11 +126,11 @@ void Slide(Game *g, int *hasMoved);
 void Fuse(Game *g, int *hasFused);
 
 /**
- * rotates a 4x4 matrix of ints, i.e. a 2048 board, 90 deg to right
+ * rotates a 4x4 matrix of unsigned short ints, i.e. a 2048 board, 90 deg to right
  * @param board a pointer to a board
  * @param n number of rotations wanted; must be 1, 2, or 3
  */
-void Rotate(int **board, int n);
+void Rotate(unsigned short int **board, int n);
 
 /**
  * looks for two neighbouring identical values in a 4x4 matrix of ints, i.e. a 2048 board, with no 0s; if a pair is
