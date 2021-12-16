@@ -3,8 +3,9 @@
 ([instructions.pdf](https://github.com/draialexis/2048-c/files/7647069/TP_DM_subj.pdf))
 
 ## Compiling and executing
-You will need to use **Linux**
 ### Graphical version (main) with SDL
+You will need to use **Linux**.
+
 You will need to install SDL 1.2 on you system as well as the TTF library, as needed:
 
 ```
@@ -22,12 +23,12 @@ sudo apt-get install libsdl1.2-dev
 sudo apt-get install libsdl-ttf2.0-dev
 ```
 
-#### Linux with ***make***
+#### With ***make***
 ```
 make
 bin/prog
 ```
-#### Linux without ***make***
+#### Without ***make***
 ```
 gcc -c -Wall `sdl-config --cflags` src/main.c -o src/main.o
 gcc -c -Wall `sdl-config --cflags` src/toolbox.c -o src/toolbox.o
@@ -37,6 +38,7 @@ bin/prog
 ```
 ---
 ### Console version
+Windows or Linux is fine.
 #### With ***make***
 ```
 make console
