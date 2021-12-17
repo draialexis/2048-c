@@ -12,10 +12,7 @@ You will need to install SDL 1.2 on your system as well as the TTF library, as n
 sudo apt-get install libsdl1.2debian
 sudo apt-get install libsdl-ttf2.0-0
 ```
-
-That should be enough for you to run the executable (`cd` to the `2048-c` folder, then run `bin/prog`)
-
-To compile the program yourself, you'll need to install ***gcc*** and ***make*** as needed, and the *dev* versions of the appropriate SDL libraries:
+To compile the program, you'll need to install ***gcc*** and maybe ***make*** as needed, and the *dev* versions of the appropriate SDL libraries:
 ```
 sudo apt install gcc
 sudo apt install make
