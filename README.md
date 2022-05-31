@@ -1,6 +1,10 @@
 # 2048 in C
 2-person university project to code 2048 in C, using SDL
-([instructions.pdf](https://github.com/draialexis/2048-c/files/7647069/TP_DM_subj.pdf))
+
+## Instruction, report (in French)
+[instructions.pdf](https://github.com/draialexis/2048-c/files/7647069/TP_DM_subj.pdf)
+
+[report.pdf](https://github.com/draialexis/2048-c/files/8804579/rapport2048.pdf)
 
 ## Compiling and executing
 ### Graphical version (main) with SDL
